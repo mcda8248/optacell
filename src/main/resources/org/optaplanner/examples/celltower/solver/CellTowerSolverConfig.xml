@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<solver>
+
+  <!-- Define the model -->
+
+  <solutionClass>org.optaplanner.examples.celltower.domain.TowerSchedule</solutionClass>
+
+  <planningEntityClass>org.optaplanner.examples.celltower.domain.CellTower</planningEntityClass>
+
+
+
+  <!-- Define the score function -->
+
+  <scoreDirectorFactory>
+
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+
+    <scoreDrl>/org/optaplanner/examples/celltower/solver/CellTowerScoreRules.drl</scoreDrl>
+    
+    <initializingScoreTrend>ONLY_UP</initializingScoreTrend>
+
+  </scoreDirectorFactory>
+
+
+
+  <!-- Configure the optimization algorithm(s) -->
+
+  <termination>
+
+     <maximumUnimprovedStepCount>100</maximumUnimprovedStepCount>
+
+  </termination>
+
+  <constructionHeuristic>
+
+    ...
+
+  </constructionHeuristic>
+
+  <localSearch>
+
+    ...
+
+  </localSearch>
+
+</solver>
