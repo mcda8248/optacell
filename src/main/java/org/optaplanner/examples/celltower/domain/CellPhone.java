@@ -11,7 +11,7 @@ public class CellPhone {
 	private double lat;
 	private double lng;
 	private long value;
-	private ArrayList<double[]> circlePoints = new ArrayList<double[]>();
+	private ArrayList<double[]> circlePoints = new ArrayList<>();
 	private boolean isPriority;
 	private String freqType;
 

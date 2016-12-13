@@ -33,7 +33,7 @@ public class TowerScheduleGenerator   {
 
 	private List<CellPhone> createPhoneList(int numPhones) {
         int n = numPhones;
-        List<CellPhone> phoneList = new ArrayList<CellPhone>(n);
+        List<CellPhone> phoneList = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             CellPhone phone = new CellPhone(4000, (36+Math.random()), (-106+Math.random()), (ThreadLocalRandom.current().nextInt(0, 3 + 1)), (ThreadLocalRandom.current().nextInt(0, 999 + 1)), false);
             phone.setId(i);
@@ -48,7 +48,7 @@ public class TowerScheduleGenerator   {
 
     private List<CellTower> createTowerList(int numTowers) {
     	int n = numTowers;
-        List<CellTower> towerList = new ArrayList<CellTower>(n);
+        List<CellTower> towerList = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             CellTower tower = new CellTower(12000, 0, 0);
             tower.setId(i);        
@@ -102,7 +102,7 @@ public class TowerScheduleGenerator   {
 
 
 	private List<CellPhone> createSmallPhoneList() {
-		List<CellPhone> phoneList = new ArrayList<CellPhone>(12);
+		List<CellPhone> phoneList = new ArrayList<>(12);
         for (int i = 0; i < 10; i++) {
             CellPhone phone = new CellPhone(4000, (36+Math.random()), (-106+Math.random()), 2, 500, false);
             phone.setId(i);
@@ -116,7 +116,7 @@ public class TowerScheduleGenerator   {
 	}
 	
 	private List<CellPhone> createMediumPhoneList() {
-		List<CellPhone> phoneList = new ArrayList<CellPhone>(80);
+		List<CellPhone> phoneList = new ArrayList<>(80);
         for (int i = 0; i < 80; i++) {
             CellPhone phone = new CellPhone(4000, (ThreadLocalRandom.current().nextDouble(30, 33)), (ThreadLocalRandom.current().nextDouble(-103, -100)), 2, 500, false);
             phone.setId(i);
@@ -130,7 +130,7 @@ public class TowerScheduleGenerator   {
 	}
 	
 	private List<CellPhone> createLargePhoneList() {
-		List<CellPhone> phoneList = new ArrayList<CellPhone>(250);
+		List<CellPhone> phoneList = new ArrayList<>(250);
         for (int i = 0; i < 250; i++) {
             CellPhone phone = new CellPhone(4000, (ThreadLocalRandom.current().nextDouble(30, 40)), (ThreadLocalRandom.current().nextDouble(-110, -100)), 2, 500, false);
             phone.setId(i);
@@ -144,7 +144,7 @@ public class TowerScheduleGenerator   {
 	}
 	
 	private List<CellPhone> createDemoPhoneList() {
-		List<CellPhone> phoneList = new ArrayList<CellPhone>(12);     
+		List<CellPhone> phoneList = new ArrayList<>(12);     
         CellPhone nor1 = new CellPhone(4000, 36.4, -100.8, 2, 500, false);
         CellPhone nor2 = new CellPhone(4000, 36.45, -100.85, 2, 500, false);
         CellPhone nor3 = new CellPhone(4000, 36.5, -100.9, 2, 500, false);

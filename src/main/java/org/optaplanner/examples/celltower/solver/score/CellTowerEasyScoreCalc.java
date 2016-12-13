@@ -26,7 +26,7 @@ public class CellTowerEasyScoreCalc implements EasyScoreCalculator<TowerSchedule
 	}
 	
 	private long checkIfFreqMatch(TowerSchedule locations) {
-		List<CellPhone> priorityPhones = new ArrayList<CellPhone>();
+		List<CellPhone> priorityPhones = new ArrayList<>();
 
 		for (CellPhone phone : locations.getPriorityPhones()) {
 			priorityPhones.add(phone);
@@ -47,7 +47,7 @@ public class CellTowerEasyScoreCalc implements EasyScoreCalculator<TowerSchedule
 	}
 
 	private long checkIfPrioritiesFilled(TowerSchedule locations) {
-		List<CellPhone> priorityPhones = new ArrayList<CellPhone>();
+		List<CellPhone> priorityPhones = new ArrayList<>();
 
 		for (CellPhone phone : locations.getPriorityPhones()) {
 			priorityPhones.add(phone);
@@ -66,7 +66,7 @@ public class CellTowerEasyScoreCalc implements EasyScoreCalculator<TowerSchedule
 	}
 	
 	private long checkIfPrioritiesContained(TowerSchedule locations) {
-		List<CellPhone> priorityPhones = new ArrayList<CellPhone>();
+		List<CellPhone> priorityPhones = new ArrayList<>();
 
 		for (CellPhone phone : locations.getPriorityPhones()) {
 			priorityPhones.add(phone);
@@ -86,7 +86,7 @@ public class CellTowerEasyScoreCalc implements EasyScoreCalculator<TowerSchedule
 	
 	private long getSoftScore(TowerSchedule locations) {
 		long softScore = 0 - locations.getOptimalScore();
-		List<CellPhone> phonesAlreadyServiced = new ArrayList<CellPhone>();
+		List<CellPhone> phonesAlreadyServiced = new ArrayList<>();
 		for (CellTower tower : locations.getTowerList()) {
 			long checkedScore = 0;
 			if (tower.getPhonesServiced() != null) {

@@ -15,7 +15,7 @@ public class CellTower {
 	private long score;
 	private double lng;
 	private GridLocation towerLocation;
-	private ArrayList<double[]> circlePoints = new ArrayList<double[]>(); 
+	private ArrayList<double[]> circlePoints = new ArrayList<>(); 
 	private String freqType;
 	
 	public CellTower() {

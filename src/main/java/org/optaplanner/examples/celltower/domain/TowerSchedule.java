@@ -74,7 +74,7 @@ public class TowerSchedule implements Solution<HardSoftLongScore> {
 	}
 
 	public void setPriorityPhones() {
-		List<CellPhone> priorityPhones = new ArrayList<CellPhone>();
+		List<CellPhone> priorityPhones = new ArrayList<>();
 		for (CellPhone phone : this.phoneList) {
 			if (phone.isPriority()) {
 				priorityPhones.add(phone);
@@ -85,7 +85,7 @@ public class TowerSchedule implements Solution<HardSoftLongScore> {
 
 	@Override
 	public Collection<? extends Object> getProblemFacts() {
-		List<Object> facts = new ArrayList<Object>();
+		List<Object> facts = new ArrayList<>();
         facts.addAll(locationList);
         // Do not add the planning entity's (processList) because that will be done automatically
         return facts;

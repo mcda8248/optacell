@@ -13,7 +13,7 @@ import org.optaplanner.examples.celltower.solver.move.TowerLocationChangeMove;
 public class TowerLocationChangeMoveFactory implements MoveListFactory<TowerSchedule> {
 
 	public List<Move> createMoveList(TowerSchedule assignment) {
-		List<Move> moveList = new ArrayList<Move>();
+		List<Move> moveList = new ArrayList<>();
 		List<GridLocation> locationList = assignment.getLocationList();
 		for (CellTower tower : assignment.getTowerList()) {
 			for (GridLocation location : locationList) {

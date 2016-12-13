@@ -19,10 +19,20 @@ public class CellTowerApp {
 
 		SolverFactory<TowerSchedule> solverFactory = SolverFactory
 				.createFromXmlResource("org/optaplanner/examples/celltower/solver/CellTowerSolverConfig.xml");
-//		solveForPhonesInArea(solverFactory, 10, 2, 4000.00, 37.00, -106.00, 36.00, -105.00);
-//		solveSmallArea(solverFactory);
-//		solveLargeArea(solverFactory);
-		solveDemoArea(solverFactory);
+		
+		if (args.length > 0) {
+			switch (args[0]) {
+			case "s": solveSmallArea(solverFactory);
+			break;
+			case "l": solveLargeArea(solverFactory);
+			break;
+			case "d": solveDemoArea(solverFactory);
+			break;
+			}
+		} else {
+		solveForPhonesInArea(solverFactory, 10, 2, 4000.00, 37.00, -106.00, 36.00, -105.00);
+		}
+		
 		
 	}
 

@@ -13,7 +13,7 @@ public class TowerGrid {
 	private int gridOffSet = 0;
 	private List<List<GridLocation>> latLines = new ArrayList<List<GridLocation>>();
 	private long optimalScore;
-	private List<CellPhone> phonesInGrid = new ArrayList<CellPhone>();
+	private List<CellPhone> phonesInGrid = new ArrayList<>();
 
 	public TowerGrid(double range, double topLeftCornerLat, double topLeftCornerLng, double botLeftCornerLat,
 			double topRightCornerLng, List<CellPhone> phones, List<CellTower> towers) {
@@ -24,13 +24,13 @@ public class TowerGrid {
 		double currentLat = topLeftCornerLat;
 		this.phonesInGrid = phones;
 		int gridId = 0;
-		List<GridLocation> currentLine = new ArrayList<GridLocation>();
+		List<GridLocation> currentLine = new ArrayList<>();
 		while (currentLat > botLeftCornerLat) {
-			List<CellPhone> phonesHere = new ArrayList<CellPhone>();
+			List<CellPhone> phonesHere = new ArrayList<>();
 			if (currentLng > topRightCornerLng) {
 				this.latLines.add(currentLine);
 
-				currentLine = new ArrayList<GridLocation>();
+				currentLine = new ArrayList<>();
 
 				currentLng = topLeftCornerLng;
 				currentLat = distFromPointWithDistance(currentLat, currentLng, gridSize, 180.0)[0];
@@ -54,7 +54,7 @@ public class TowerGrid {
 //		for (GridLocation loc : grid) {
 //			System.out.println("Grid "+loc.getId()+" score is "+loc.getScore());
 //		}
-		List<GridLocation> testGrid = new ArrayList<GridLocation>();
+		List<GridLocation> testGrid = new ArrayList<>();
 		for (GridLocation loc : this.grid) {
 			GridLocation fresh = new GridLocation(loc.getLat(), loc.getLng(), loc.getScore(), loc.getId());	
 			
@@ -76,12 +76,12 @@ public class TowerGrid {
 	}
 
 	public ArrayList<GridLocation> recalcScores(ArrayList<GridLocation> grid, List<CellPhone> phones) {
-		List<CellPhone> phonesToRemove = new ArrayList<CellPhone>();
+		List<CellPhone> phonesToRemove = new ArrayList<>();
 		for (CellPhone phone : phones) {
 			phonesToRemove.add(phone);
 		}
 		for (GridLocation gridLocation : grid) {
-			List<CellPhone> toRemove = new ArrayList<CellPhone>();
+			List<CellPhone> toRemove = new ArrayList<>();
 			for(Iterator<CellPhone> itr = phonesToRemove.iterator(); itr.hasNext();){ 
 				CellPhone phone = itr.next();
 					for (CellPhone here : gridLocation.getPhonesHere()) {
@@ -132,7 +132,7 @@ public class TowerGrid {
 	public void makeInitialGuess(int numTowers, List<GridLocation> grid) {
 		int count = 0;
 		long bestScore = 0;
-		ArrayList<GridLocation> bestLocations = new ArrayList<GridLocation>();
+		ArrayList<GridLocation> bestLocations = new ArrayList<>();
 		ArrayList<GridLocation> gridInProgress = (ArrayList<GridLocation>) grid;
 		while (count < numTowers) {
 			Collections.sort(gridInProgress, new Comparator<GridLocation>() {
