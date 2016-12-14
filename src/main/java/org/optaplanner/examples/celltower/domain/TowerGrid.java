@@ -9,16 +9,16 @@ import java.util.List;
 public class TowerGrid {
 
 	private double gridSize;
-	private ArrayList<GridLocation> grid = new ArrayList<GridLocation>();
+	private ArrayList<GridLocation> grid = new ArrayList<>();
 	private int gridOffSet = 0;
-	private List<List<GridLocation>> latLines = new ArrayList<List<GridLocation>>();
+	private List<List<GridLocation>> latLines = new ArrayList<>();
 	private long optimalScore;
 	private List<CellPhone> phonesInGrid = new ArrayList<>();
 
 	public TowerGrid(double range, double topLeftCornerLat, double topLeftCornerLng, double botLeftCornerLat,
 			double topRightCornerLng, List<CellPhone> phones, List<CellTower> towers) {
 		double areaOfSearch = metersBetweenTwoPoints(topLeftCornerLat, topLeftCornerLng, topLeftCornerLat,
-				topRightCornerLng);
+				topRightCornerLng);	
 		gridSize = Math.sqrt((range * range) / 2);
 		double currentLng = topLeftCornerLng;
 		double currentLat = topLeftCornerLat;

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 public class CellPhone {
 
 	private int id;
-	final int mainPriority;
-	final int subPriority;
 	private double range;
 	private double lat;
 	private double lng;
@@ -15,13 +13,12 @@ public class CellPhone {
 	private boolean isPriority;
 	private String freqType;
 
-	public CellPhone(double range, double lat, double lng, int mainPri, int subPri, boolean isPriority) {
+	public CellPhone(double range, double lat, double lng, long value, boolean isPriority) {
 		this.range = range;
 		this.lat = lat;
 		this.lng = lng;
-		this.mainPriority = mainPri;
-		this.subPriority = subPri;
-		this.value = ((3 + 1 - mainPri) ^ 2 * 1000 + 999 + 1 - subPri) * 1000;
+
+		this.value = value;
 		for (int i = 0; i <= 360; i = i + 45) {
 			double[] array = new double[2];
 			array = distFromPointWithDistance(lat, lng, range, i);
@@ -80,13 +77,6 @@ public class CellPhone {
 		this.lng = lng;
 	}
 
-	public int getMainPriority() {
-		return mainPriority;
-	}
-
-	public int getSubPriority() {
-		return subPriority;
-	}
 
 	public ArrayList<double[]> getCirclePoints() {
 		return circlePoints;
