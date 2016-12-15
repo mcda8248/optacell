@@ -3,13 +3,15 @@ package org.optaplanner.examples.celltower.domain;
 import java.util.List;
 
 public class GridLocation {
-	public int id;
-	public double lat;
-	public double lng;
-	public boolean hasTower;
-	public CellTower towerHere;
-	public long score;
-	public List<CellPhone> phonesHere;
+	private int id;
+	private double lat;
+	private double lng;
+	private boolean hasTower;
+	private CellTower towerHere;
+	private long score;
+	private List<CellPhone> phonesHere;
+	private List<Integer> priHere;
+	
 
 	public GridLocation(double lat, double lng, long score, int id) {
 		this.lat = lat;
@@ -93,4 +95,18 @@ public class GridLocation {
 	public void setScore(long score) {
 		this.score = score;
 	}
+
+
+
+	public List<Integer> getPriHere() {
+		return priHere;
+	}
+
+
+
+	public void setPriHere(List<Integer> priHere) {
+		this.priHere = priHere;
+	}
+	
+	
 }

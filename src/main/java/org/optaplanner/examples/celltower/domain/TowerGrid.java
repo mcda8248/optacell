@@ -27,6 +27,7 @@ public class TowerGrid {
 		List<GridLocation> currentLine = new ArrayList<>();
 		while (currentLat > botLeftCornerLat) {
 			List<CellPhone> phonesHere = new ArrayList<>();
+			List<Integer> priHere = new ArrayList<>();
 			if (currentLng > topRightCornerLng) {
 				this.latLines.add(currentLine);
 
@@ -41,10 +42,12 @@ public class TowerGrid {
 						+ phone.getRange()) {
 					gridLocationScore = gridLocationScore + phone.getValue();
 					phonesHere.add(phone);
-				}
+					priHere.add(phone.getPri());
+									}
 			}
 			GridLocation thisLocation = new GridLocation(currentLat, currentLng, gridLocationScore, gridId);
 			thisLocation.setPhonesHere(phonesHere);
+			thisLocation.setPriHere(priHere);
 			
 			grid.add(thisLocation);
 			currentLine.add(thisLocation);

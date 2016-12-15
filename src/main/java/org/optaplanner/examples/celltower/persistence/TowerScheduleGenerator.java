@@ -37,13 +37,15 @@ public class TowerScheduleGenerator {
 		int n = numPhones;
 		List<CellPhone> phoneList = new ArrayList<>(n);
 		long value=1;
+		int pri=1;
 		for (int i = 0; i < n; i++) {
 			CellPhone phone = new CellPhone(4000, (36 + Math.random()), (-106 + Math.random()),
 					value,
 					false);
 			phone.setId(i);
 			phoneList.add(phone);
-			value = value*2;
+			phone.setPri(pri);
+			pri++;
 		}
 		return phoneList;
 	}

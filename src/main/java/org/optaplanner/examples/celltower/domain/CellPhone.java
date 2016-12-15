@@ -12,6 +12,7 @@ public class CellPhone {
 	private ArrayList<double[]> circlePoints = new ArrayList<>();
 	private boolean isPriority;
 	private String freqType;
+	private int pri;
 
 	public CellPhone(double range, double lat, double lng, long value, boolean isPriority) {
 		this.range = range;
@@ -35,7 +36,15 @@ public class CellPhone {
 		this.freqType = freqType;
 	}
 
+	
 
+	public int getPri() {
+		return pri;
+	}
+
+	public void setPri(int pri) {
+		this.pri = pri;
+	}
 
 	public long getValue() {
 		return value;
@@ -101,6 +110,18 @@ public class CellPhone {
 		result[0] = Math.toDegrees(lng2);
 		return result;
 	}
+	
+	public double metersBetween(double otherLat, double otherLng) {
+		final double R = 6372800; //Earth Radius in Kilometers
+        double dLat = Math.toRadians(this.lat - otherLat);
+        double dLon = Math.toRadians(this.lng - otherLng);
+        double latRad = Math.toRadians(this.lat);
+        double otherLatRad= Math.toRadians(otherLat);
+ 
+        double a = Math.pow(Math.sin(dLat / 2),2) + Math.pow(Math.sin(dLon / 2),2) * Math.cos(latRad) * Math.cos(otherLatRad);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        return R * c;
+    }
 
 	public boolean isPriority() {
 		return isPriority;
