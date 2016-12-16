@@ -19,11 +19,22 @@ public class CellTowerEasyScoreCalc implements EasyScoreCalculator<TowerSchedule
 		long hardScore = 0;
 		long softScore = 0;
 
-
 		softScore = getSoftScore(locations);
 		hardScore -= checkIfPrioritiesFilled(locations);
+		hardScore -= checkIfPriLocation(locations);
+				
+
+
+		hardScore -= checkIfPrioritiesContained(locations);
+		// hardScore -= checkIfFreqMatch(locations);
+
+		return HardSoftLongScore.valueOf(hardScore, softScore);
+	}
+
+	private long checkIfPriLocation(TowerSchedule locations) {
+		long hardscore = 0;
 		List<GridLocation> best = new ArrayList<>();
-		for (int i = 1; i < locations.getTowerList().size()+1; i++) {
+		for (int i = 1; i < locations.getTowerList().size() + 1; i++) {
 			List<Integer> pri = new ArrayList<>();
 			pri.add(i);
 			for (GridLocation loc : checkStrictPriority(pri, locations.getTowerGrid().getGrid())) {
@@ -31,15 +42,16 @@ public class CellTowerEasyScoreCalc implements EasyScoreCalculator<TowerSchedule
 			}
 		}
 		for (GridLocation loc : best) {
-			System.out.println(loc.getPriHere());
+			System.err.println(loc.getPriHere());
 		}
-	//hardScore -= checkIfPrioritiesContained(locations);
-		//hardScore -= checkIfFreqMatch(locations);
-		
-		
-		return HardSoftLongScore.valueOf(hardScore, softScore);
+		for (CellTower tower : locations.getTowerList()) {
+			if (!best.contains(tower.getTowerLocation())){
+				hardscore=hardscore+1;
+			}
+		}
+		return hardscore;
 	}
-	
+
 	private long checkIfFreqMatch(TowerSchedule locations) {
 		List<CellPhone> priorityPhones = new ArrayList<>();
 
@@ -51,8 +63,8 @@ public class CellTowerEasyScoreCalc implements EasyScoreCalculator<TowerSchedule
 			for (CellTower tower : locations.getTowerList()) {
 				if (tower.getPhonesServiced() != null && tower.getPhonesServiced().contains(phone)) {
 					if (tower.getFreqType().equals(phone.getFreqType())) {
-					itr.remove();
-					break;
+						itr.remove();
+						break;
 					}
 				}
 			}
@@ -79,7 +91,7 @@ public class CellTowerEasyScoreCalc implements EasyScoreCalculator<TowerSchedule
 
 		return priorityPhones.size();
 	}
-	
+
 	private long checkIfPrioritiesContained(TowerSchedule locations) {
 		List<CellPhone> priorityPhones = new ArrayList<>();
 
@@ -98,28 +110,32 @@ public class CellTowerEasyScoreCalc implements EasyScoreCalculator<TowerSchedule
 
 		return priorityPhones.size();
 	}
-	
+
 	private List<GridLocation> checkStrictPriority(List<Integer> pri, List<GridLocation> locations) {
 
-		int nextPri = (pri.get(pri.size()-1)+1); 
+		int nextPri = (pri.get(pri.size() - 1) + 1);
 		List<GridLocation> newLocs = new ArrayList<>();
-		
-		
+
 		for (GridLocation loc : locations) {
-			if (loc.getPriHere().contains(pri)) {
+			int count = 0;
+			for (Integer intpri : pri) {
+				if (loc.getPriHere().contains(intpri)) {
+					count++;
+				}
+			}
+			if (count == pri.size()) {
 				newLocs.add(loc);
 			}
 		}
-		
+
 		if (newLocs.size() > 0) {
 			pri.add(nextPri);
 			locations = checkStrictPriority(pri, newLocs);
-		} 
-			return locations;
-		
-				
+		}
+		return locations;
+
 	}
-	
+
 	private long getSoftScore(TowerSchedule locations) {
 		long softScore = 0 - locations.getOptimalScore();
 		List<CellPhone> phonesAlreadyServiced = new ArrayList<>();

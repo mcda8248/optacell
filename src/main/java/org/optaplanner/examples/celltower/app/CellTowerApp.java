@@ -1,5 +1,6 @@
 package org.optaplanner.examples.celltower.app;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -31,6 +32,14 @@ public class CellTowerApp {
 			}
 		} else {
 		solveForPhonesInArea(solverFactory, 10, 2, 4000.00, 37.00, -106.00, 36.00, -105.00);
+		List<Integer> test1 = new ArrayList<>();
+		List<Integer> test2 = new ArrayList<>();
+		test1.add(1);
+		test2.add(1);
+		System.out.println(test1.contains(1));
+		System.out.println(test2.contains(1));
+		System.out.println(test1.contains(test2));
+		System.out.println(test2.contains(test1));
 		}
 		
 		
