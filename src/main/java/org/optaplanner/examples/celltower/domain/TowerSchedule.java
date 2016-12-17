@@ -20,6 +20,7 @@ public class TowerSchedule implements Solution<HardSoftLongScore> {
 	private HardSoftLongScore score;
 	private long optimalScore;
 	private List<CellPhone> priorityPhones;
+	private boolean strictPri;
 
 	@ValueRangeProvider(id = "locationRange")
 	public List<GridLocation> getLocationList() {
@@ -101,5 +102,14 @@ public class TowerSchedule implements Solution<HardSoftLongScore> {
 		this.score = score;
 		
 	}
+
+	public boolean isStrictPri() {
+		return strictPri;
+	}
+
+	public void setStrictPri(boolean strictPri) {
+		this.strictPri = strictPri;
+	}
+
 
 }

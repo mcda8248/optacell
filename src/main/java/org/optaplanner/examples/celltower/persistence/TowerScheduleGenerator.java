@@ -22,6 +22,7 @@ public class TowerScheduleGenerator {
 				schedule.getPhoneList(), schedule.getTowerList()));
 		schedule.setOptimalScore(schedule.getTowerGrid().getOptimalScore());
 		schedule.setPriorityPhones();
+		schedule.setStrictPri(true);
 		return schedule;
 	}
 
