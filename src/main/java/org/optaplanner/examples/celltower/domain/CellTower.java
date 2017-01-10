@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.examples.celltower.solver.move.factory.GridLocationStrengthWeightFactory;
 
 @PlanningEntity
 public class CellTower {
@@ -92,7 +93,7 @@ public class CellTower {
 		this.phonesServiced = phonesServiced;
 	}
 	
-	@PlanningVariable(valueRangeProviderRefs = {"locationRange"} /*, strengthWeightFactoryClass = GridLocationStrengthWeightFactory.class*/)
+	@PlanningVariable(valueRangeProviderRefs = {"locationRange"} , strengthWeightFactoryClass = GridLocationStrengthWeightFactory.class)
 	public GridLocation getTowerLocation() {
 		return towerLocation;
 	}

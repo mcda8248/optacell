@@ -1,7 +1,9 @@
-package org.optaplanner.examples.celltower.domain;
+package org.optaplanner.examples.celltower.solver.move.factory;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.examples.celltower.domain.GridLocation;
+import org.optaplanner.examples.celltower.domain.TowerSchedule;
 
 public class GridLocationStrengthWeightFactory implements SelectionSorterWeightFactory<TowerSchedule, GridLocation> {
 

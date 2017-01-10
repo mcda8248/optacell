@@ -1,30 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!-- Define the model -->
-  <environmentMode>REPRODUCIBLE</environmentMode>
-  <solutionClass>org.optaplanner.examples.celltower.domain.TowerSchedule</solutionClass>
-  <entityClass>org.optaplanner.examples.celltower.domain.CellTower</entityClass>
+	<!-- Define the model -->
+	<environmentMode>REPRODUCIBLE</environmentMode>
+	<solutionClass>org.optaplanner.examples.celltower.domain.TowerSchedule</solutionClass>
+	<entityClass>org.optaplanner.examples.celltower.domain.CellTower</entityClass>
 
-  <!-- Define the score function -->
-  <scoreDirectorFactory>
-    <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
-      <easyScoreCalculatorClass>org.optaplanner.examples.celltower.solver.score.CellTowerEasyScoreCalc</easyScoreCalculatorClass>
-    <!--  <scoreDrl>org/optaplanner/examples/celltower/solver/cellTowerScoreRules.drl</scoreDrl> -->
-  </scoreDirectorFactory>
+	<!-- Define the score function -->
+	<scoreDirectorFactory>
+		<scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+		<easyScoreCalculatorClass>org.optaplanner.examples.celltower.solver.score.CellTowerEasyScoreCalc</easyScoreCalculatorClass>
+		<!-- <scoreDrl>org/optaplanner/examples/celltower/solver/cellTowerScoreRules.drl</scoreDrl> -->
+	</scoreDirectorFactory>
 
-  <!-- Configure the optimization algorithms (optional) -->
-  <termination>
-   <minutesSpentLimit>5</minutesSpentLimit>
-  </termination>
-  <constructionHeuristic>
-    ...
-  </constructionHeuristic>
-    <localSearch>
-      <moveListFactory>
-      <moveListFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.TowerLocationChangeMoveFactory</moveListFactoryClass>
-    </moveListFactory>
-    <termination>
-      <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
-    </termination>
-  </localSearch>
+	<!-- Configure the optimization algorithms (optional) -->
+	<termination>
+		<minutesSpentLimit>5</minutesSpentLimit>
+	</termination>
+	<constructionHeuristic>
+		...
+	</constructionHeuristic>
+	<localSearch>
+		<changeMoveSelector>
+			<cacheType>JUST_IN_TIME</cacheType>
+			<selectionOrder>RANDOM</selectionOrder>
+			<valueSelector>
+				<sorterWeightFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.GridLocationStrengthWeightFactory</sorterWeightFactoryClass>
+				<sorterOrder>DESCENDING</sorterOrder>
+			</valueSelector>
+			<moveListFactory>
+				<moveListFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.TowerLocationChangeMoveFactory</moveListFactoryClass>
+			</moveListFactory>
+		</changeMoveSelector>
+		<swapMoveSelector>
+			<cacheType>JUST_IN_TIME</cacheType>
+			<selectionOrder>RANDOM</selectionOrder>
+			<valueSelector>
+				<sorterWeightFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.GridLocationStrengthWeightFactory</sorterWeightFactoryClass>
+				<sorterOrder>DESCENDING</sorterOrder>
+			</valueSelector>
+			<moveListFactory>
+				<moveListFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.TowerLocationSwapMoveFactory</moveListFactoryClass>
+			</moveListFactory>
+		</swapMoveSelector>
+
+		<subChainChangeMoveSelector>
+			<cacheType>JUST_IN_TIME</cacheType>
+			<selectionOrder>RANDOM</selectionOrder>
+			<subChainSelector>
+				<entitySelector>
+					<entityClass>org.optaplanner.examples.celltower.domain.CellTower</entityClass>
+				</entitySelector>
+				<minimumSubChainSize>2</minimumSubChainSize>
+				<maximumSubChainSize>6</maximumSubChainSize>
+			</subChainSelector>
+			<valueSelector>
+				<variableName>towerLocation</variableName>
+				<sorterWeightFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.GridLocationStrengthWeightFactory</sorterWeightFactoryClass>
+				<sorterOrder>DESCENDING</sorterOrder>
+			</valueSelector>
+			<selectReversingMoveToo>true</selectReversingMoveToo>
+		</subChainChangeMoveSelector>
+		<termination>
+			<unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
+		</termination>
+	</localSearch>
 </solver>
