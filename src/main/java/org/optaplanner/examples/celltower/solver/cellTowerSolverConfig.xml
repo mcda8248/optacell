@@ -20,46 +20,29 @@
 		...
 	</constructionHeuristic>
 	<localSearch>
+		<unionMoveSelector>
 		<changeMoveSelector>
-			<cacheType>JUST_IN_TIME</cacheType>
-			<selectionOrder>RANDOM</selectionOrder>
 			<valueSelector>
 				<sorterWeightFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.GridLocationStrengthWeightFactory</sorterWeightFactoryClass>
 				<sorterOrder>DESCENDING</sorterOrder>
 			</valueSelector>
 			<moveListFactory>
+				<cacheType>JUST_IN_TIME</cacheType>
+				<selectionOrder>RANDOM</selectionOrder>
 				<moveListFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.TowerLocationChangeMoveFactory</moveListFactoryClass>
 			</moveListFactory>
 		</changeMoveSelector>
-		<swapMoveSelector>
-			<cacheType>JUST_IN_TIME</cacheType>
-			<selectionOrder>RANDOM</selectionOrder>
-			<valueSelector>
-				<sorterWeightFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.GridLocationStrengthWeightFactory</sorterWeightFactoryClass>
-				<sorterOrder>DESCENDING</sorterOrder>
-			</valueSelector>
 			<moveListFactory>
+				<cacheType>JUST_IN_TIME</cacheType>
+				<selectionOrder>RANDOM</selectionOrder>
 				<moveListFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.TowerLocationSwapMoveFactory</moveListFactoryClass>
 			</moveListFactory>
-		</swapMoveSelector>
+		</unionMoveSelector>
+			
+		
+		
 
-		<subChainChangeMoveSelector>
-			<cacheType>JUST_IN_TIME</cacheType>
-			<selectionOrder>RANDOM</selectionOrder>
-			<subChainSelector>
-				<entitySelector>
-					<entityClass>org.optaplanner.examples.celltower.domain.CellTower</entityClass>
-				</entitySelector>
-				<minimumSubChainSize>2</minimumSubChainSize>
-				<maximumSubChainSize>6</maximumSubChainSize>
-			</subChainSelector>
-			<valueSelector>
-				<variableName>towerLocation</variableName>
-				<sorterWeightFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.GridLocationStrengthWeightFactory</sorterWeightFactoryClass>
-				<sorterOrder>DESCENDING</sorterOrder>
-			</valueSelector>
-			<selectReversingMoveToo>true</selectReversingMoveToo>
-		</subChainChangeMoveSelector>
+	
 		<termination>
 			<unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
 		</termination>
