@@ -21,24 +21,16 @@
 	</constructionHeuristic>
 	<localSearch>
 		<unionMoveSelector>
+		<cacheType>PHASE</cacheType>
 		<changeMoveSelector>
 			<valueSelector>
 				<sorterWeightFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.GridLocationStrengthWeightFactory</sorterWeightFactoryClass>
+				<selectionOrder>SORTED</selectionOrder>
+				<sorterManner>INCREASING_STRENGTH</sorterManner>
 				<sorterOrder>DESCENDING</sorterOrder>
-			</valueSelector>
-			<moveListFactory>
-				<cacheType>JUST_IN_TIME</cacheType>
-				<selectionOrder>RANDOM</selectionOrder>
-				<moveListFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.TowerLocationChangeMoveFactory</moveListFactoryClass>
-			</moveListFactory>
-		</changeMoveSelector>
-			<moveListFactory>
-				<cacheType>JUST_IN_TIME</cacheType>
-				<selectionOrder>RANDOM</selectionOrder>
-				<moveListFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.TowerLocationSwapMoveFactory</moveListFactoryClass>
-			</moveListFactory>
-		</unionMoveSelector>
-			
+			</valueSelector>					
+		</changeMoveSelector>													
+		</unionMoveSelector>	
 		
 		
 
