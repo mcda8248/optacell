@@ -14,6 +14,7 @@ public class TowerGrid {
 	private List<List<GridLocation>> latLines = new ArrayList<>();
 	private long optimalScore;
 	private List<CellPhone> phonesInGrid = new ArrayList<>();
+	private long actualScore;
 
 	public TowerGrid(double range, double topLeftCornerLat, double topLeftCornerLng, double botLeftCornerLat,
 			double topRightCornerLng, List<CellPhone> phones, List<CellTower> towers) {
@@ -182,6 +183,24 @@ public class TowerGrid {
 			System.out.println("Best Grid Location is at "+loc.getLat()+" lat, "+loc.getLng()+" lng with a score of "+loc.getScore());
 		}
 		
+	}
+	
+	
+
+	public List<CellPhone> getPhonesInGrid() {
+		return phonesInGrid;
+	}
+
+	public void setPhonesInGrid(List<CellPhone> phonesInGrid) {
+		this.phonesInGrid = phonesInGrid;
+	}
+
+	public long getActualScore() {
+		return actualScore;
+	}
+
+	public void setActualScore(long actualScore) {
+		this.actualScore = actualScore;
 	}
 
 	public long getOptimalScore() {

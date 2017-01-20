@@ -23,6 +23,7 @@
 		<unionMoveSelector>
 		<cacheType>PHASE</cacheType>
 		<changeMoveSelector>
+		<cacheType>PHASE</cacheType>
 			<valueSelector>
 				<sorterWeightFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.GridLocationStrengthWeightFactory</sorterWeightFactoryClass>
 				<selectionOrder>SORTED</selectionOrder>
