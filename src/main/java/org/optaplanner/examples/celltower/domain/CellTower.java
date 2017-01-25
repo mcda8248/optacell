@@ -174,5 +174,11 @@ public class CellTower {
 		this.phonesServiced = null;
 		
 	}
+	
+
+
+	public double getDistanceTo(GridLocation destination) {
+		return metersBetween(destination.getLat(), destination.getLng());
+	}
 
 }

@@ -23,8 +23,14 @@
 		<unionMoveSelector>
 		<cacheType>PHASE</cacheType>
 		<changeMoveSelector>
+		<entitySelector id="entitySelector1"/>
 		<cacheType>PHASE</cacheType>
 			<valueSelector>
+				<nearbySelection>
+            		<originEntitySelector mimicSelectorRef="entitySelector1"/>
+           		 	<nearbyDistanceMeterClass>org.optaplanner.examples.celltower.domain.GridLocationNearbyDistanceMeter</nearbyDistanceMeterClass>
+            		<parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          		</nearbySelection>
 				<sorterWeightFactoryClass>org.optaplanner.examples.celltower.solver.move.factory.GridLocationStrengthWeightFactory</sorterWeightFactoryClass>
 				<selectionOrder>SORTED</selectionOrder>
 				<sorterManner>INCREASING_STRENGTH</sorterManner>
