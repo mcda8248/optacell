@@ -93,7 +93,7 @@ public class CellTower {
 		this.phonesServiced = phonesServiced;
 	}
 	
-	@PlanningVariable(valueRangeProviderRefs = {"locationRange"} , strengthWeightFactoryClass = GridLocationStrengthWeightFactory.class)
+	@PlanningVariable(valueRangeProviderRefs = {"locationRange"} /*, strengthWeightFactoryClass = GridLocationStrengthWeightFactory.class*/)
 	public GridLocation getTowerLocation() {
 		return towerLocation;
 	}
