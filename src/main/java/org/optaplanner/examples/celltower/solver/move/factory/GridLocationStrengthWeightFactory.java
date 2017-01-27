@@ -5,28 +5,37 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.examples.celltower.domain.GridLocation;
 import org.optaplanner.examples.celltower.domain.TowerSchedule;
 
-public class GridLocationStrengthWeightFactory implements SelectionSorterWeightFactory<TowerSchedule, GridLocation> {
+public class GridLocationStrengthWeightFactory
+      implements SelectionSorterWeightFactory<TowerSchedule, GridLocation>
+{
 
-	@Override
-	public Comparable createSorterWeight(TowerSchedule solution, GridLocation location) {
-		int numPhonesHere = location.getPhonesHere().size();
+   @Override
+   public Comparable<GridLocationDifficultyWeight> createSorterWeight(TowerSchedule solution,
+         GridLocation location)
+   {
+      int numPhonesHere = location.getPhonesHere().size();
 
-		return new GridLocationDifficultyWeight(location, numPhonesHere);
-	}
+      return new GridLocationDifficultyWeight(numPhonesHere);
+   }
 
-	public static class GridLocationDifficultyWeight implements Comparable<GridLocationDifficultyWeight> {
+   public static class GridLocationDifficultyWeight
+         implements Comparable<GridLocationDifficultyWeight>
+   {
 
-		private final GridLocation location;
-		private final int numPhonesHere;
+      //private final GridLocation location;
+      private final int numPhonesHere;
 
-		public GridLocationDifficultyWeight(GridLocation location, int numPhonesHere) {
-			this.location = location;
-			this.numPhonesHere = numPhonesHere;
-		}
+      public GridLocationDifficultyWeight(int numPhonesHere)
+      {
+         //this.location = location;
+         this.numPhonesHere = numPhonesHere;
+      }
 
-		public int compareTo(GridLocationDifficultyWeight other) {
-			return new CompareToBuilder().append(other.numPhonesHere, numPhonesHere).toComparison();
-		}
+      public int compareTo(GridLocationDifficultyWeight other)
+      {
+         return new CompareToBuilder()
+               .append(other.numPhonesHere, numPhonesHere).toComparison();
+      }
 
-	}
+   }
 }
