@@ -75,4 +75,34 @@ public class CellTowerUtil
 
       return grid;
    }
+
+   /**
+    * Generates a random integer between the two provided values.  Min must be less than max
+    * @param rangeMin the smallest possible value in the range
+    * @param rangeMax the largest possible value in the range
+    * @return A random integer within the range of values
+    */
+   public static int generateRandomIntBetween(int rangeMin, int rangeMax)
+   {
+      int range = rangeMax - rangeMin + 1;
+      return (int)(Math.random() * range) + rangeMin;
+   }
+
+   /**
+    * Generates a random location within the box bounded by the provided top left and bottom right corners
+    * @param topLeft the top left of the location domain box
+    * @param bottomRight the bottom right of the location domain box
+    * @return A random location within the box
+    */
+   public static GeodeticLocation2D generateRandomLocationWithin(
+         GeodeticLocation2D topLeft, GeodeticLocation2D bottomRight)
+   {
+      double latRange = topLeft.getLatitude() - bottomRight.getLatitude();
+      double randomLat = Math.random() * latRange + bottomRight.getLatitude();
+      
+      double lonRange = bottomRight.getLongitude() - topLeft.getLongitude();
+      double randomLon = Math.random() * lonRange + topLeft.getLongitude();
+      
+      return new GeodeticLocation2D(randomLat, randomLon);
+   }
 }

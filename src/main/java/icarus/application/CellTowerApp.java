@@ -1,6 +1,8 @@
 package icarus.application;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +32,8 @@ public class CellTowerApp
    private static SolverFactory<TowerSchedule> solverFactory;
    /** logger */
    private final static Logger logger = LoggerFactory.getLogger(CellTowerApp.class);
+   /** Properties */
+   private static Properties props;
 
    /**
     * Main entrance point for the application, this initializes Optaplanner's solver,
@@ -42,37 +46,22 @@ public class CellTowerApp
     */
    public static void main(String[] args)
    {
-      logger.debug("Test logging");
-      logger.info("Test Info");
       solverFactory = SolverFactory.createFromXmlResource("cellTowerSolverConfig.xml");
 
-      solveForPhonesInArea(10, 2, 4000.00, new GeodeticLocation2D(37.00, -106.00), new GeodeticLocation2D(36.00, -105.00));
-   }
-
-   /**
-    * Creates a problem space for a solution to be generated for.
-    * 
-    * @param phones The number of phones in the area
-    * @param towers The number of towers to be scheduled
-    * @param phoneRange The range of the phones
-    * @param topLeft The top left point in the area
-    * @param bottomRight The bottom right point in the area
-    */
-   private static void solveForPhonesInArea(int phones,
-         int towers,
-         double phoneRange,
-         GeodeticLocation2D topLeft,
-         GeodeticLocation2D bottomRight)
-   {
-      Solver<TowerSchedule> solver = solverFactory.buildSolver();
+      props = new Properties();
+      try
+      {
+         props.load(ClassLoader.getSystemResourceAsStream("towerscheduler.properties"));
+      }
+      catch(IOException e)
+      {
+         logger.info("Failed to load properties file - " + e);
+      }
       
-      TowerSchedule unsolvedTowerSchedule = new TowerScheduleGenerator()
-            .createTowerSchedule(phones, towers, phoneRange, topLeft, bottomRight, 0.1d, 0.1d);
-
-      TowerSchedule solvedTowerSchedule = null;
-      solver.solve(unsolvedTowerSchedule);
-      solvedTowerSchedule = (TowerSchedule) solver.getBestSolution();
-      printTowerScheduleinGeoJSON(solvedTowerSchedule);
+      Solver<TowerSchedule> solver = solverFactory.buildSolver();
+      TowerSchedule sched = TowerScheduleGenerator.createFromProperties(props);
+      solver.solve(sched);
+      printTowerScheduleinGeoJSON(solver.getBestSolution());
    }
 
    /**
@@ -95,6 +84,31 @@ public class CellTowerApp
          JSONArray featureList = new JSONArray();
          List<CellPhone> phoneList = solvedTowerSchedule.getPhoneList();
 
+         //Draw the bounds
+         JSONObject boundary = new JSONObject();
+         boundary.put("type", "Polygon");
+         double [][][] points = new double[1][5][2];
+         GeodeticLocation2D topLeft = solvedTowerSchedule.getTopLeft();
+         GeodeticLocation2D bottomRight = solvedTowerSchedule.getBottomRight();
+         points[0][0][1] = topLeft.getLatitude();
+         points[0][0][0] = topLeft.getLongitude();
+         points[0][1][1] = topLeft.getLatitude();
+         points[0][1][0] = bottomRight.getLongitude();
+         points[0][2][1] = bottomRight.getLatitude();
+         points[0][2][0] = bottomRight.getLongitude();
+         points[0][3][1] = bottomRight.getLatitude();
+         points[0][3][0] = topLeft.getLongitude();
+         points[0][4][1] = topLeft.getLatitude();
+         points[0][4][0] = topLeft.getLongitude();
+         boundary.put("coordinates", points);
+         JSONObject boundaryFeature = new JSONObject();
+         boundaryFeature.put("geometry", boundary);
+         boundaryFeature.put("type", "Feature");
+         JSONObject props = new JSONObject();
+         props.put("id", 999);
+         boundaryFeature.put("properties", props);
+         featureList.put(boundaryFeature);
+         
          for (CellPhone phone : phoneList)
          {
 

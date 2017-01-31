@@ -19,6 +19,8 @@ import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore
 public class TowerSchedule implements Solution<HardSoftDoubleScore>
 {
    private Collection<GeodeticLocation2D> locationList;
+   private GeodeticLocation2D topLeft;
+   private GeodeticLocation2D bottomRight;
    
    @PlanningEntityCollectionProperty
    private List<CellTower> towerList;
@@ -54,6 +56,26 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
    public void setPhoneList(List<CellPhone> phoneList)
    {
       this.phoneList = phoneList;
+   }
+
+   public GeodeticLocation2D getTopLeft()
+   {
+      return topLeft;
+   }
+
+   public void setTopLeft(GeodeticLocation2D topLeft)
+   {
+      this.topLeft = topLeft;
+   }
+
+   public GeodeticLocation2D getBottomRight()
+   {
+      return bottomRight;
+   }
+
+   public void setBottomRight(GeodeticLocation2D bottomRight)
+   {
+      this.bottomRight = bottomRight;
    }
 
    @Override
