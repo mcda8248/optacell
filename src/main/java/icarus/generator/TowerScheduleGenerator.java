@@ -18,6 +18,11 @@ import icarus.util.CellTowerUtil;
  */
 public class TowerScheduleGenerator
 {
+   /**
+    * Generates a problem space for optaplanner to generaate a solution from a properties file
+    * @param props The properties to build from
+    * @return The generated problem space
+    */
    public static TowerSchedule createFromProperties(Properties props)
    {
       TowerSchedule schedule = new TowerSchedule();
@@ -29,6 +34,7 @@ public class TowerScheduleGenerator
       double lonGranularity = Double.valueOf(props.getProperty("grid.lon.granularity"));
       GeodeticLocation2D topLeft = new GeodeticLocation2D(topLeftLat, topLeftLon);
       GeodeticLocation2D bottomRight = new GeodeticLocation2D(bottomRightLat, bottomRightLon);
+      schedule.setHighPriorityThreshold(Integer.valueOf(props.getProperty("service.highpri.threshold")));
       schedule.setTopLeft(topLeft);
       schedule.setBottomRight(bottomRight);
       schedule.setLocationList(
@@ -103,7 +109,7 @@ public class TowerScheduleGenerator
       
       return schedule;
    }
-   
+
    public TowerSchedule createFromImport(File importFile)
    {
       return null;
