@@ -7,6 +7,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import icarus.generator.TowerScheduleGenerator;
 import icarus.model.CellPhone;
@@ -26,6 +28,8 @@ public class CellTowerApp
 {
    /** The solver factory that generates an OptaPlanner solver for the problem space */
    private static SolverFactory<TowerSchedule> solverFactory;
+   /** logger */
+   private final static Logger logger = LoggerFactory.getLogger(CellTowerApp.class);
 
    /**
     * Main entrance point for the application, this initializes Optaplanner's solver,
@@ -38,6 +42,8 @@ public class CellTowerApp
     */
    public static void main(String[] args)
    {
+      logger.debug("Test logging");
+      logger.info("Test Info");
       solverFactory = SolverFactory.createFromXmlResource("cellTowerSolverConfig.xml");
 
       solveForPhonesInArea(10, 2, 4000.00, new GeodeticLocation2D(37.00, -106.00), new GeodeticLocation2D(36.00, -105.00));
@@ -78,8 +84,8 @@ public class CellTowerApp
    private static void printTowerScheduleinGeoJSON(
          TowerSchedule solvedTowerSchedule)
    {
-      System.out.println("Building GEO Json file");
-      System.out.println(solvedTowerSchedule.getTowerList().size());
+      logger.info("Building GEO Json");
+      logger.info(solvedTowerSchedule.getTowerList().size() + " Towers solved.");
 
       List<CellTower> initialGuess = solvedTowerSchedule.getTowerList();
       JSONObject featureCollection = new JSONObject();
@@ -140,14 +146,14 @@ public class CellTowerApp
          featureCollection.put("features", featureList);
       } catch (JSONException e)
       {
-         System.out.println("error");
+         logger.error("Error building JSON - " + e);
       }
 
-      System.out.println(featureCollection.toString());
+      logger.info(featureCollection.toString());
 
       for (CellTower placed : initialGuess)
       {
-         System.out.println("This tower is at ( " + placed.getLocation().getLatitude() + " , "
+         logger.info("This tower is at ( " + placed.getLocation().getLatitude() + " , "
                + placed.getLocation().getLongitude() + " )");
       }
    }
