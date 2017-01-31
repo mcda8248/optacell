@@ -1,11 +1,16 @@
 package icarus.generator;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import icarus.model.CellPhone;
 import icarus.model.CellTower;
@@ -18,6 +23,8 @@ import icarus.util.CellTowerUtil;
  */
 public class TowerScheduleGenerator
 {
+   /** logger */
+   private static final Logger logger = LoggerFactory.getLogger(TowerScheduleGenerator.class);
    /**
     * Generates a problem space for optaplanner to generaate a solution from a properties file
     * @param props The properties to build from
@@ -110,8 +117,22 @@ public class TowerScheduleGenerator
       return schedule;
    }
 
-   public TowerSchedule createFromImport(File importFile)
+   /**
+    * Creates an initial problem space from a file, which needs to be a saved json TowerSchedule object
+    * @param fileToLoad The file to import
+    * @return The initial configuration
+    */
+   public static TowerSchedule createFromImport(String fileToLoad)
    {
+      try
+      {
+         return new ObjectMapper().readValue(new File(fileToLoad), TowerSchedule.class);
+      }
+         catch (IOException e)
+      {
+         logger.info("Failed to load initial configuration from file - " + e);
+      }
+
       return null;
    }
 }

@@ -1,9 +1,12 @@
 package icarus.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +36,19 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
    private List<CellTower> towerList;
    private List<CellPhone> phoneList;
    private HardSoftDoubleScore score;
+
+   public void saveConfigToFile(String filename)
+   {
+      ObjectMapper mapper = new ObjectMapper();
+      try
+      {
+         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(filename), this);
+      }
+      catch (IOException e)
+      {
+         logger.info("Failed to write configuration file - " + e);
+      }
+   }
 
    /**
     * Returns a geojson representation of the current solution within this schedule

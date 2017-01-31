@@ -17,6 +17,13 @@ public class CellPhone
    private int priority;
 
    /**
+    * No argument constructor for jackson
+    */
+   public CellPhone()
+   {
+   }
+
+   /**
     * Constructor for a cell phone
     * @param r The range the cell can reach a tower from
     * @param loc The location of the cell phone

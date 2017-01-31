@@ -41,6 +41,8 @@ public class CellTowerApp
    {
       solverFactory = SolverFactory.createFromXmlResource("cellTowerSolverConfig.xml");
 
+      String howToRunArg = args[0];
+
       props = new Properties();
       try
       {
@@ -50,9 +52,29 @@ public class CellTowerApp
       {
          logger.info("Failed to load properties file - " + e);
       }
-      
+
       Solver<TowerSchedule> solver = solverFactory.buildSolver();
-      TowerSchedule sched = TowerScheduleGenerator.createFromProperties(props);
+      TowerSchedule sched = null;
+      if ("file".equals(howToRunArg))
+      {
+         String fileToLoad = props.getProperty("initial.config.file");
+         if (args.length > 1)
+         {
+            fileToLoad = args[1];
+         }
+         sched = TowerScheduleGenerator.createFromImport(fileToLoad);
+      }
+      else
+      {
+         sched = TowerScheduleGenerator.createFromProperties(props);
+      }
+
+      if ("save".equals(howToRunArg))
+      {
+         String filename = props.getProperty("initial.config.file");
+         sched.saveConfigToFile(filename);
+      }
+
       solver.solve(sched);
       logger.info(solver.getBestSolution().buildGeoJson());
    }

@@ -15,7 +15,14 @@ public class GeodeticLocation2D
    private double latitude;
    /** The longitude */
    private double longitude;
-   
+
+   /**
+    * No argument constructor for jackson
+    */
+   public GeodeticLocation2D()
+   {
+   }
+
    /**
     * Constructor of a two dimensional geodetic location
     * @param lat The latitude
