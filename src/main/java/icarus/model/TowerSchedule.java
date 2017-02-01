@@ -26,17 +26,32 @@ import org.slf4j.LoggerFactory;
 @PlanningSolution
 public class TowerSchedule implements Solution<HardSoftDoubleScore>
 {
+   /** The classes logger */
    private static final Logger logger = LoggerFactory.getLogger(TowerSchedule.class);
+   /** The threshold at which a priority should be considered high */
    private int highPriorityThreshold;
+   /** A collection of all possible locations that towers can be placed */
    private Collection<GeodeticLocation2D> locationList;
+   /** The top left corner of the geospatial area to be considered */
    private GeodeticLocation2D topLeft;
+   /** The bottom right corner of the geospatial area to be considered */
    private GeodeticLocation2D bottomRight;
-   
+   /**
+    * The list of cell towers.  This is an optaplanner PlanningEntityCollectionProperty,
+    * as optaplanner changes them while generating it's schedule
+    */
    @PlanningEntityCollectionProperty
    private List<CellTower> towerList;
+   /** The list of all cell phones to be considered */
    private List<CellPhone> phoneList;
+   /** The optaplanner score of this schedule */
    private HardSoftDoubleScore score;
 
+   /**
+    * Saves this configuration to a file, simply uses Jackson to save the JSON
+    * representation of this instance to the provided file name
+    * @param filename The name of the file to store to
+    */
    public void saveConfigToFile(String filename)
    {
       ObjectMapper mapper = new ObjectMapper();
@@ -153,57 +168,109 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
       return featureCollection.toString();
    }
 
+   /**
+    * Returns the list of the possible locations within the geospatial area of 
+    * effect of this schedule.
+    * <p>
+    * This is an Optaplanner ValueRangeProvider, which means it's used by optaplanner
+    * to determine all the possible values for it's planning entities (cell towers)
+    * TODO - Would be nice if this could be an Optaplanner ValueRange instead of a static list?
+    * @return The list of all locations
+    */
    @ValueRangeProvider(id = "locationRange")
    public Collection<GeodeticLocation2D> getLocationList()
    {
       return locationList;
    }
 
-   public void setLocationList(Collection<GeodeticLocation2D> locationList)
+   /**
+    * Standard setter for the locations
+    * @param val The locations to set
+    */
+   public void setLocationList(Collection<GeodeticLocation2D> val)
    {
-      this.locationList = locationList;
+      locationList = val;
    }
 
+   /**
+    * Standard getter for the tower list
+    * @return The tower list
+    */
    public List<CellTower> getTowerList()
    {
       return towerList;
    }
 
-   public void setTowerList(List<CellTower> towerList)
+   /**
+    * Standard setter for the tower list
+    * @param list The tower list to set
+    */
+   public void setTowerList(List<CellTower> list)
    {
-      this.towerList = towerList;
+      towerList = list;
    }
 
+   /**
+    * Standard getter for the phone list
+    * @return The phone list
+    */
    public List<CellPhone> getPhoneList()
    {
       return phoneList;
    }
 
-   public void setPhoneList(List<CellPhone> phoneList)
+   /**
+    * Standard setter for the phone list
+    * @param val The phone list to set
+    */
+   public void setPhoneList(List<CellPhone> val)
    {
-      this.phoneList = phoneList;
+      phoneList = val;
    }
 
+   /**
+    * Standard getter for the top left corner of the geospatial area
+    * @return The top left corner
+    */
    public GeodeticLocation2D getTopLeft()
    {
       return topLeft;
    }
 
-   public void setTopLeft(GeodeticLocation2D topLeft)
+   /**
+    * Standard setter for the top left corner of the geospatial area
+    * @param val The top left corner to set
+    */
+   public void setTopLeft(GeodeticLocation2D val)
    {
-      this.topLeft = topLeft;
+      topLeft = val;
    }
 
+   /**
+    * Standard getter for the bottom right corner of the geospatial area
+    * @return The bottom right corner
+    */
    public GeodeticLocation2D getBottomRight()
    {
       return bottomRight;
    }
 
-   public void setBottomRight(GeodeticLocation2D bottomRight)
+   /**
+    * Standard setter for the bottom right corner of the geospatial area
+    * @param val The bottom right corner to set
+    */
+   public void setBottomRight(GeodeticLocation2D val)
    {
-      this.bottomRight = bottomRight;
+      bottomRight = val;
    }
 
+   /**
+    * Returns all Optaplanner problem facts.  In this case, these are all the
+    * locations that towers can be moved to
+    * TODO - Verify this, what if the locations were ranges instead of a finite list?
+    * @see org.optaplanner.core.api.domain.solution.Solution#getProblemFacts()
+    * @return A collection of all problem facts
+    */
    @Override
    public Collection<? extends Object> getProblemFacts()
    {
@@ -213,25 +280,43 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
       return facts;
    }
 
+   /**
+    * Standard getter for the current score of this solution
+    * @see org.optaplanner.core.api.domain.solution.Solution#getScore()
+    * @return The score
+    */
    @Override
    public HardSoftDoubleScore getScore()
    {
       return this.score;
    }
 
+   /**
+    * Standard setter for the current score of this solution
+    * @see org.optaplanner.core.api.domain.solution.Solution#setScore(org.optaplanner.core.api.score.Score)
+    * @param val The score to set
+    */
    @Override
-   public void setScore(HardSoftDoubleScore score)
+   public void setScore(HardSoftDoubleScore val)
    {
-      this.score = score;
+      score = val;
    }
 
+   /**
+    * Standard getter for the high priority threshold
+    * @return The high priority threshold
+    */
    public int getHighPriorityThreshold()
    {
       return highPriorityThreshold;
    }
 
-   public void setHighPriorityThreshold(int highPriorityThreshold)
+   /**
+    * Standard setter for the high priority threshold
+    * @param val The threshold to set
+    */
+   public void setHighPriorityThreshold(int val)
    {
-      this.highPriorityThreshold = highPriorityThreshold;
+      highPriorityThreshold = val;
    }
 }

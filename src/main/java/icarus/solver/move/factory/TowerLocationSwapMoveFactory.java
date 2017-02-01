@@ -11,13 +11,23 @@ import icarus.model.CellTower;
 import icarus.model.TowerSchedule;
 import icarus.solver.move.TowerLocationSwapMove;
 
+/**
+ *  Optaplanner MoveListFactory implementation that generates all moves that
+ *  involve swapping two cell towers 
+ */
 public class TowerLocationSwapMoveFactory
       implements MoveListFactory<TowerSchedule>
 {
-
-   public List<Move> createMoveList(TowerSchedule assignment)
+   /**
+    * Generates a list of all tower moves that involve swapping the location
+    * of two towers
+    * @param schedule The current tower schedule
+    * @return The list of all tower swapping moves
+    */
+   @Override
+   public List<Move> createMoveList(TowerSchedule schedule)
    {
-      List<CellTower> towerList = assignment.getTowerList();
+      List<CellTower> towerList = schedule.getTowerList();
       List<Move> moveList = new ArrayList<Move>();
       for (ListIterator<CellTower> firstTowerList = towerList
             .listIterator(); firstTowerList.hasNext();)

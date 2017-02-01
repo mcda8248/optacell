@@ -26,7 +26,7 @@ public class TowerScheduleGenerator
    /** logger */
    private static final Logger logger = LoggerFactory.getLogger(TowerScheduleGenerator.class);
    /**
-    * Generates a problem space for optaplanner to generaate a solution from a properties file
+    * Generates a problem space for optaplanner to generate a solution from a properties file
     * @param props The properties to build from
     * @return The generated problem space
     */

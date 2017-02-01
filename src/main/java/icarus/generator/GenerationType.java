@@ -6,5 +6,11 @@ package icarus.generator;
  */
 public enum GenerationType
 {
-   FIXED, RANDOM
+   /** Used to indicate a variable should use a fixed value, defined in a properties file */
+   FIXED,
+   /**
+    * Used to indicate the application should generate a random value,
+    * bounds are defined in a properties file
+    */
+   RANDOM
 }

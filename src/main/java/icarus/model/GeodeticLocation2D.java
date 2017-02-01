@@ -8,6 +8,7 @@ import java.util.List;
  * 
  * TODO - Fix so lats and lons have to be within appropriate bounds
  *      - Fix distances and clean up circular point calculations
+ *      - Verify units, seems circles are too small to be kilometers?
  */
 public class GeodeticLocation2D
 {
@@ -44,11 +45,11 @@ public class GeodeticLocation2D
    }
    /**
     * Standard setter for latitude
-    * @param latitude What to set latitude to
+    * @param lat What to set latitude to
     */
-   public void setLatitude(double latitude)
+   public void setLatitude(double lat)
    {
-      this.latitude = latitude;
+      latitude = lat;
    }
    /**
     * Standard getter for longitude
@@ -60,11 +61,11 @@ public class GeodeticLocation2D
    }
    /**
     * Standard setter for longitude
-    * @param longitude What to set longitude to
+    * @param lon What to set longitude to
     */
-   public void setLongitude(double longitude)
+   public void setLongitude(double lon)
    {
-      this.longitude = longitude;
+      longitude = lon;
    }
 
    /**
@@ -143,7 +144,12 @@ public class GeodeticLocation2D
 
       return new GeodeticLocation2D(Math.toDegrees(lat2), Math.toDegrees(lng2));
    }
-   
+
+   /**
+    * Two geodetic locations are considered equal if their latitudes and longitudes are equal
+    * @param other The other object to compare with
+    * @return True if the provided object is a GeodeticLocation2D with equal latitude and longitude of this instance
+    */
    @Override
    public boolean equals(Object other)
    {
@@ -153,5 +159,17 @@ public class GeodeticLocation2D
       GeodeticLocation2D o = (GeodeticLocation2D)other;
       return (latitude == o.getLatitude() &&
             longitude == o.getLongitude());
+   }
+
+   /**
+    * Generates the hashcode for a geodetic location, just calls
+    * <code>super.hashCode()</code>
+    * @see java.lang.Object#hashCode()
+    * @return The hashcode of this object
+    */
+   @Override
+   public int hashCode()
+   {
+      return super.hashCode();
    }
 }

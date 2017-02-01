@@ -12,7 +12,11 @@ public class GridLocationNearbyDistanceMeter
    /**
     * The implementation of the NearbyDistanceMeter interface, providing the
     * distance between two points
+    * @param origin The tower that is one end of the distance check
+    * @param destination The location that is the other end of the distance check
+    * @return The distance between the origin and the destination
     */
+   @Override
    public double getNearbyDistance(CellTower origin, GeodeticLocation2D destination)
    {
       return GeodeticLocation2D.distanceBetween(origin.getLocation(), destination);
