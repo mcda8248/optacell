@@ -86,6 +86,11 @@ public class TowerScheduleGenerator
          phoneList.add(new CellPhone(i+1, phoneRange, location, phoneType, priority));
       }
       schedule.setPhoneList(phoneList);
+      schedule.setLowestPriority(numPhones);
+      if (phonePriType == GenerationType.RANDOM)
+      {
+         schedule.setLowestPriority(Integer.valueOf(props.getProperty("phone.priority.max")));
+      }
       
       //Build towers
       List<CellTower> towerList = new ArrayList<>();

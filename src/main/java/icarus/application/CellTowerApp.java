@@ -92,8 +92,8 @@ public class CellTowerApp
       }
 
       solver.solve(sched);
-      logger.info("Called compareTo - " + LocationStrengthWeightFactory.callCount + " times");
 
+      logger.info("Comparison method was called " + LocationStrengthWeightFactory.callCount + " times");
       //TODO - Switch so geo json file gets written to property or command argument defined filename
       try
       {

@@ -14,7 +14,7 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,13 +23,15 @@ import org.slf4j.LoggerFactory;
  * <p>
  * This is a PlanningSolution for OptaPlanner purposes
  */
-@PlanningSolution
-public class TowerSchedule implements Solution<HardSoftDoubleScore>
+@PlanningSolution()
+public class TowerSchedule implements Solution<HardSoftLongScore>
 {
    /** The classes logger */
    private static final Logger logger = LoggerFactory.getLogger(TowerSchedule.class);
    /** The threshold at which a priority should be considered high */
    private int highPriorityThreshold;
+   /** The lowest priority of any phone, for use in scoring */
+   private int lowestPriority;
    /** A collection of all possible locations that towers can be placed */
    private Collection<GeodeticLocation2D> locationList;
    /** The top left corner of the geospatial area to be considered */
@@ -45,7 +47,7 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
    /** The list of all cell phones to be considered */
    private List<CellPhone> phoneList;
    /** The optaplanner score of this schedule */
-   private HardSoftDoubleScore score;
+   private HardSoftLongScore score;
 
    /**
     * Saves this configuration to a file, simply uses Jackson to save the JSON
@@ -67,6 +69,7 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
 
    /**
     * Returns a geojson representation of the current solution within this schedule
+    * TODO - convert this to a geojson building module
     * @return A geojson string
     */
    public String buildGeoJson()
@@ -287,7 +290,7 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
     * @return The score
     */
    @Override
-   public HardSoftDoubleScore getScore()
+   public HardSoftLongScore getScore()
    {
       return this.score;
    }
@@ -298,7 +301,7 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
     * @param val The score to set
     */
    @Override
-   public void setScore(HardSoftDoubleScore val)
+   public void setScore(HardSoftLongScore val)
    {
       score = val;
    }
@@ -319,5 +322,23 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
    public void setHighPriorityThreshold(int val)
    {
       highPriorityThreshold = val;
+   }
+
+   /**
+    * Standard getter for lowest priority
+    * @return The lowest priority
+    */
+   public int getLowestPriority()
+   {
+      return lowestPriority;
+   }
+
+   /**
+    * Standard setter for lowest priority
+    * @param val The lowest priority to set
+    */
+   public void setLowestPriority(int val)
+   {
+      lowestPriority = val;
    }
 }

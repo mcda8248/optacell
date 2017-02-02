@@ -1,6 +1,6 @@
 package icarus.scoring;
 
-import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 
 import icarus.model.CellPhone;
@@ -34,10 +34,10 @@ public class CellTowerEasyScoreCalc
     * @return The score of the schedule
     */
    @Override
-   public HardSoftDoubleScore calculateScore(TowerSchedule schedule)
+   public HardSoftLongScore calculateScore(TowerSchedule schedule)
    {
-      double hardScore = 0;
-      double softScore = 0;
+      long hardScore = 0;
+      long softScore = 0;
 
       for (CellPhone phone : schedule.getPhoneList())
       {
@@ -53,11 +53,17 @@ public class CellTowerEasyScoreCalc
          
          if (!foundTower)
          {
-            double metricVal = 1.0 / phone.getPriority();
-            softScore -= metricVal*metricVal;
+            if (phone.getPriority() <= schedule.getHighPriorityThreshold())
+               hardScore--;
+            else
+            {
+               int relativePri = schedule.getLowestPriority() - phone.getPriority();
+               int cubed = relativePri*relativePri*relativePri;
+               softScore -= cubed;
+            }
          }
       }
       
-      return HardSoftDoubleScore.valueOf(hardScore, softScore);
+      return HardSoftLongScore.valueOf(hardScore, softScore);
    }
 }

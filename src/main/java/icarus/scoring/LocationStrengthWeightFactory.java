@@ -15,6 +15,7 @@ import icarus.model.TowerSchedule;
 public class LocationStrengthWeightFactory
       implements SelectionSorterWeightFactory<TowerSchedule, GeodeticLocation2D>
 {
+   /** marker variable to count how many times methods are being called */
    public static long callCount = 0;
    /**
     * Generates a comparable that allows Optaplanner to determine the relative weights
@@ -90,7 +91,6 @@ public class LocationStrengthWeightFactory
       @Override
       public int compareTo(LocationWeight o)
       {
-         callCount++;
          int val = score.compareTo(o.getScore());
          
          return val == 0 ? 1 : val;

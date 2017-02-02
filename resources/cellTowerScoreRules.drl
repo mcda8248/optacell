@@ -19,19 +19,16 @@ package org.optaplanner.examples.celltower.solver;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 
-import org.optaplanner.examples.celltower.domain.CellPhone;
-import org.optaplanner.examples.celltower.domain.GridLocation;
-import org.optaplanner.examples.celltower.domain.CellTower;
-import org.optaplanner.examples.celltower.domain.TowerSchedule;
-import org.optaplanner.examples.celltower.domain.TowerGrid;
-
+import icarus.model.CellPhone;
+import icarus.model.GeodeticLocation2D;
+import icarus.model.CellTower;
+import icarus.model.TowerSchedule;
 
 global HardSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
 // ############################################################################
-
 rule "Pri not covered"
     when
         TowerSchedule(phoneList != null, priPhoneList : getPriPhones(), phoneList.contains(priPhoneList) = false, $penalty = priPhoneList.size())

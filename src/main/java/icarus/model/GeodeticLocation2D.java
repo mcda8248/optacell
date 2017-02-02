@@ -171,4 +171,22 @@ public class GeodeticLocation2D
    {
       return super.hashCode();
    }
+   
+   /**
+    * Overridden toString method, returns ' (lat, lon) '
+    * @see java.lang.Object#toString()
+    * @return A string representation of this location
+    */
+   @Override
+   public String toString()
+   {
+      StringBuilder sb = new StringBuilder();
+      sb.append(" (")
+        .append(latitude)
+        .append(", ")
+        .append(longitude)
+        .append(") ");
+
+      return sb.toString();
+   }
 }
