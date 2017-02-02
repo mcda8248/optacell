@@ -46,7 +46,7 @@ public class TowerScheduleGenerator
       schedule.setBottomRight(bottomRight);
       schedule.setLocationList(
             CellTowerUtil.buildGrid(topLeft, bottomRight, latGranularity, lonGranularity));
-      
+
       int numTowers = Integer.valueOf(props.getProperty("grid.towers"));
       int numPhones = Integer.valueOf(props.getProperty("grid.phones"));
       List<String> freqTypes = Stream.of(props.getProperty("frequency.types").split(",")).collect(Collectors.toList());
@@ -60,7 +60,7 @@ public class TowerScheduleGenerator
       List<CellPhone> phoneList = new ArrayList<>();
       for (int i = 0; i < numPhones; i++)
       {
-         int phoneRange = Integer.valueOf(props.getProperty("phone.range.kilometers"));
+         int phoneRange = Integer.valueOf(props.getProperty("phone.range.meters"));
          if (phoneRangeType == GenerationType.RANDOM)
          {
             int rangeMin = Integer.valueOf(props.getProperty("phone.range.min"));
@@ -91,7 +91,7 @@ public class TowerScheduleGenerator
       List<CellTower> towerList = new ArrayList<>();
       for (int i = 0; i < numTowers; i++)
       {
-         int towerRange = Integer.valueOf(props.getProperty("tower.range.kilometers"));
+         int towerRange = Integer.valueOf(props.getProperty("tower.range.meters"));
          if (towerRangeType == GenerationType.RANDOM)
          {
             int rangeMin = Integer.valueOf(props.getProperty("tower.range.min"));

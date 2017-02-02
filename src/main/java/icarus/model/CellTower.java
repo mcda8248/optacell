@@ -6,6 +6,8 @@ import java.util.Collection;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
+import icarus.scoring.LocationStrengthWeightFactory;
+
 /**
  * Represents a cell tower that can service a number of cell phones within
  * it's purview
@@ -21,14 +23,12 @@ public class CellTower
    private int id;
    /**
     * The range of service of this tower, any cell phone within this range can be
-    * serviced by this tower, range is defined in kilometers
+    * serviced by this tower, range is defined in meters
     */
    private double range;
    /** The location of this tower, this is the variable that changes during scheduling */
-   @PlanningVariable(valueRangeProviderRefs = {"locationRange"}) /*
-    * , strengthWeightFactoryClass =
-    * GridLocationStrengthWeightFactory.class
-    */
+   @PlanningVariable(valueRangeProviderRefs = {"locationRange"},
+                     strengthWeightFactoryClass = LocationStrengthWeightFactory.class)
    private GeodeticLocation2D location;
    /** The types of cell phone frequencies this tower can support */
    private Collection<String> freqTypes;

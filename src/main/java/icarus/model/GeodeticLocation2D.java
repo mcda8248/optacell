@@ -8,7 +8,6 @@ import java.util.List;
  * 
  * TODO - Fix so lats and lons have to be within appropriate bounds
  *      - Fix distances and clean up circular point calculations
- *      - Verify units, seems circles are too small to be kilometers?
  */
 public class GeodeticLocation2D
 {
@@ -69,10 +68,10 @@ public class GeodeticLocation2D
    }
 
    /**
-    * Returns the distance between two geodetic points in kilometers
+    * Returns the distance between two geodetic points in meters
     * @param one location one
     * @param two location two
-    * @return The distance between the two points, in kilometers.  Returns MAX_DOUBLE if either input is null
+    * @return The distance between the two points, in meters.  Returns MAX_DOUBLE if either input is null
     */
    public static double distanceBetween(GeodeticLocation2D one,
          GeodeticLocation2D two)
@@ -82,7 +81,7 @@ public class GeodeticLocation2D
          return Double.MAX_VALUE;
       }
 
-      final double R = 6372800; // Earth Radius in Kilometers
+      final double R = 6372800; // Earth Radius in Meters
       double dLat = Math.toRadians(one.getLatitude() - two.getLatitude());
       double dLon = Math.toRadians(one.getLongitude() - two.getLongitude());
       double latRad = Math.toRadians(one.getLatitude());
@@ -96,18 +95,18 @@ public class GeodeticLocation2D
    }
 
    /**
-    * Returns a collection of points that are every 45 degrees on a circle around a
+    * Returns a collection of points that are every 5 degrees on a circle around a
     * given point at a specified distance.  The first and last points are the same,
-    * closing the circle, so the returned array is of size 9
+    * closing the circle, so the returned array is of size 73
     * @param location The location around which the circle should be calculated
     * @param distance The distance from the center each point should be
-    * @return A collection of 9 points, one every 45 degrees in a circle
+    * @return A collection of 73 points, one every 5 degrees in a circle
     */
    public static List<double[]> getPointsInCircleAround(GeodeticLocation2D location,
          double distance)
    {
       List<double[]> points = new ArrayList<>();
-      for (int i = 0; i <= 360; i+=45)
+      for (int i = 0; i <= 360; i+=5)
       {
          GeodeticLocation2D loc = getLocationAtDistanceFrom(location, distance, i);
          double[] array = new double[2];
@@ -123,7 +122,7 @@ public class GeodeticLocation2D
     * Returns the point on the earth that is a specified distance from another point
     * in a specified direction
     * @param location The location to start from
-    * @param distance The distance to travel, in kilometers
+    * @param distance The distance to travel, in meters
     * @param angle The angle to travel in from the start
     * @return The end point
     */

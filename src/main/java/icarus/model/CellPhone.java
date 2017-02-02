@@ -7,7 +7,7 @@ public class CellPhone
 {
    /** The identification number of the phone, should be unique across all phones */
    private int id;
-   /** The range within which a tower must be located to provide service.  Range is defined in kilometers */
+   /** The range within which a tower must be located to provide service.  Range is defined in meters */
    private double range;
    /** The location of the phone */
    private GeodeticLocation2D location;

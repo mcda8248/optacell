@@ -1,4 +1,4 @@
-package icarus.solver.score;
+package icarus.scoring;
 
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
@@ -28,6 +28,7 @@ public class CellTowerEasyScoreCalc
     * <p>
     * TODO - Make the scoring generic or user defined
     *        Discuss and potentially change scoring methodology?
+    *        HardSoftDoubleScore is not recommended, switch to hardsoftlongscore
     *        
     * @param schedule The tower schedule to score
     * @return The score of the schedule

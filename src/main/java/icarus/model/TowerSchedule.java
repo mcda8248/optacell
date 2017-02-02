@@ -108,16 +108,16 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
 
             JSONObject polygon = new JSONObject();
             polygon.put("type", "Polygon");
-            double[][][] polyPoints = new double[1][9][2];
+            double[][][] polyPoints = new double[1][73][2];
             int phoneCircleCount = 0;
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 72; i++)
             {
                polyPoints[0][i] =
                      GeodeticLocation2D.getPointsInCircleAround(phone.getLocation(),
                            phone.getRange()).get(phoneCircleCount);
                phoneCircleCount++;
             }
-            polyPoints[0][8] = GeodeticLocation2D.getPointsInCircleAround(phone.getLocation(),
+            polyPoints[0][72] = GeodeticLocation2D.getPointsInCircleAround(phone.getLocation(),
                   phone.getRange()).get(0);
             polygon.put("coordinates", polyPoints);
             JSONObject feature = new JSONObject();
@@ -134,15 +134,15 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
          {
             JSONObject polygon = new JSONObject();
             polygon.put("type", "Polygon");
-            double[][][] polyPoints = new double[1][9][2];
+            double[][][] polyPoints = new double[1][73][2];
             int towerCircleCount = 0;
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 72; i++)
             {
                polyPoints[0][i] = GeodeticLocation2D.getPointsInCircleAround(placedTower.getLocation(), placedTower.getRange())
                      .get(towerCircleCount);
                towerCircleCount++;
             }
-            polyPoints[0][8] = GeodeticLocation2D.getPointsInCircleAround(placedTower.getLocation(), placedTower.getRange()).get(0);
+            polyPoints[0][72] = GeodeticLocation2D.getPointsInCircleAround(placedTower.getLocation(), placedTower.getRange()).get(0);
             polygon.put("coordinates", polyPoints);
 
             JSONObject feature = new JSONObject();
@@ -268,6 +268,7 @@ public class TowerSchedule implements Solution<HardSoftDoubleScore>
     * Returns all Optaplanner problem facts.  In this case, these are all the
     * locations that towers can be moved to
     * TODO - Verify this, what if the locations were ranges instead of a finite list?
+    *      - Not sure locations are problem facts since they are part of the domain
     * @see org.optaplanner.core.api.domain.solution.Solution#getProblemFacts()
     * @return A collection of all problem facts
     */

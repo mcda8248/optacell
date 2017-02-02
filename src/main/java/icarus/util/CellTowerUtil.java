@@ -15,7 +15,7 @@ public class CellTowerUtil
    /**
     * Determines if a tower is servicing a cell phone.  Checks that frequency types match
     * first to avoid distance calculations if possible, then determines if the tower is
-    * closer than the smaller of the service range between the phone and tower.
+    * within range of the phone.
     * @param tower The cell phone tower
     * @param phone The cell phone
     * @return true if the tower is servicing the phone, false otherwise
@@ -28,14 +28,8 @@ public class CellTowerUtil
       {
          return false;
       }
-      
-      double smallerRange = phone.getRange();
-      if (tower.getRange() < phone.getRange())
-      {
-         smallerRange = tower.getRange();
-      }
 
-      return GeodeticLocation2D.distanceBetween(tower.getLocation(), phone.getLocation()) < smallerRange;
+      return GeodeticLocation2D.distanceBetween(tower.getLocation(), phone.getLocation()) < phone.getRange();
    }
 
    /**
