@@ -3,6 +3,7 @@
 export CLASSPATH=./jar/Icarus.jar
 export CLASSPATH=${CLASSPATH}\;./lib/optaplanner-core-6.4.0.Final.jar
 export CLASSPATH=${CLASSPATH}\;./lib/java-json.jar
+export CLASSPATH=${CLASSPATH}\;./lib/javassist-3.18.1-GA.jar
 export CLASSPATH=${CLASSPATH}\;./lib/xstream-1.4.7.jar
 export CLASSPATH=${CLASSPATH}\;./lib/kie-api-6.4.0.Final.jar
 export CLASSPATH=${CLASSPATH}\;./lib/slf4j-api-1.7.2.jar
@@ -15,6 +16,9 @@ export CLASSPATH=${CLASSPATH}\;./lib/commons-lang3-3.1.jar
 export CLASSPATH=${CLASSPATH}\;./lib/commons-math3-3.4.1.jar
 export CLASSPATH=${CLASSPATH}\;./lib/xpp3_min-1.1.4c.jar
 export CLASSPATH=${CLASSPATH}\;./lib/logback-core-1.0.9.jar
+export CLASSPATH=${CLASSPATH}\;./lib/jackson-all-1.9.0.jar
+export CLASSPATH=${CLASSPATH}\;./resources
 
-#/c/Program\ Files/Java/jdk1.8.0_121/bin/java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000 icarus.application.CellTowerApp
-/c/Program\ Files/Java/jdk1.8.0_121/bin/java  icarus.application.CellTowerApp
+#TODO fix this to use an env variable to determine whether to debug or not
+#/c/Program\ Files/Java/jdk1.8.0_121/bin/java -server -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000 icarus.application.CellTowerApp $*
+/c/Program\ Files/Java/jdk1.8.0_121/bin/java -server icarus.application.CellTowerApp $*

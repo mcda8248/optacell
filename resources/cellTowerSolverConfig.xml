@@ -2,28 +2,41 @@
 <solver>
   <!-- Define the model -->
   <environmentMode>REPRODUCIBLE</environmentMode>
-  <solutionClass>icarus.model.TowerSchedule</solutionClass>
-  <entityClass>icarus.model.CellTower</entityClass>
+  <scanAnnotatedClasses>
+    <packageInclude>icarus.model</packageInclude>
+  </scanAnnotatedClasses>
 
   <!-- Define the score function -->
   <scoreDirectorFactory>
-    <scoreDefinitionType>HARD_SOFT_DOUBLE</scoreDefinitionType>
-      <easyScoreCalculatorClass>icarus.solver.score.CellTowerEasyScoreCalc</easyScoreCalculatorClass>
+    <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+      <incrementalScoreCalculatorClass>icarus.scoring.CellTowerIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+      <!-- 
+      <assertionScoreDirectorFactory>
+        <easyScoreCalculatorClass>icarus.scoring.CellTowerEasyScoreCalc</easyScoreCalculatorClass>
+      </assertionScoreDirectorFactory>
+      -->
+      <initializingScoreTrend>ONLY_UP</initializingScoreTrend>
   </scoreDirectorFactory>
 
-  <!-- Configure the optimization algorithms (optional) -->
-  <termination>
-    <secondsSpentLimit>30</secondsSpentLimit>
-  </termination>
   <constructionHeuristic>
-    <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+    <pooledEntityPlacer>
+    <changeMoveSelector>
+    <entitySelector>
+      <cacheType>PHASE</cacheType>
+    </entitySelector>
+    <valueSelector>
+       <cacheType>PHASE</cacheType>
+       <selectionOrder>SORTED</selectionOrder>
+       <sorterManner>INCREASING_STRENGTH</sorterManner>
+    </valueSelector>
+    </changeMoveSelector>
+    </pooledEntityPlacer>
   </constructionHeuristic>
+
+  <!--
   <localSearch>
-    <unionMoveSelector>
-      <changeMoveSelector/>
-      <swapMoveSelector/>
-     </unionMoveSelector>
-    
+    <changeMoveSelector/>
+
     <acceptor>
       <entityTabuSize>7</entityTabuSize>
     </acceptor>
@@ -31,7 +44,8 @@
       <acceptedCountLimit>1000</acceptedCountLimit>
     </forager>
      <termination>
-      <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
+      <unimprovedSecondsSpentLimit>10</unimprovedSecondsSpentLimit>
     </termination>
   </localSearch>
+-->
 </solver>

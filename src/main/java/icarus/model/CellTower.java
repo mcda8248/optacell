@@ -6,6 +6,8 @@ import java.util.Collection;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
+import icarus.scoring.LocationStrengthWeightFactory;
+
 /**
  * Represents a cell tower that can service a number of cell phones within
  * it's purview
@@ -21,23 +23,18 @@ public class CellTower
    private int id;
    /**
     * The range of service of this tower, any cell phone within this range can be
-    * serviced by this tower, range is defined in kilometers
+    * serviced by this tower, range is defined in meters
     */
    private double range;
    /** The location of this tower, this is the variable that changes during scheduling */
-   @PlanningVariable(valueRangeProviderRefs = {"locationRange"}) /*
-    * , strengthWeightFactoryClass =
-    * GridLocationStrengthWeightFactory.class
-    */
+   @PlanningVariable(valueRangeProviderRefs = {"locationRange"},
+                     strengthWeightFactoryClass = LocationStrengthWeightFactory.class)
    private GeodeticLocation2D location;
    /** The types of cell phone frequencies this tower can support */
    private Collection<String> freqTypes;
 
-   //private long score
-   //private List<CellPhone> phonesServiced;
-
    /**
-    * No arg constructor so optaplanner can clone towers
+    * No arg constructor so optaplanner can clone towers, and for jackson
     */
    public CellTower()
    {
@@ -68,16 +65,28 @@ public class CellTower
       freqTypes = types;
    }
 
+   /**
+    * Standard getter for freqTypes
+    * @return The freqTypes
+    */
    public Collection<String> getFreqTypes()
    {
       return freqTypes;
    }
 
+   /**
+    * Standard setter for freqTypes
+    * @param types The types to set
+    */
    public void setFreqType(Collection<String> types)
    {
       freqTypes = types;
    }
-   
+
+   /**
+    * Adds a frequency type to the types this tower handles
+    * @param type The type to add
+    */
    public void addFreqType(String type)
    {
       if (freqTypes == null)
@@ -88,36 +97,63 @@ public class CellTower
       freqTypes.add(type);
    }
 
+   /**
+    * Standard getter for location
+    * @return The location
+    */
    public GeodeticLocation2D getLocation()
    {
       return location;
    }
 
+   /**
+    * Standard setter for location
+    * @param loc The location to set
+    */
    public void setLocation(GeodeticLocation2D loc)
    {
       location = loc;
    }
 
+   /**
+    * Standard getter for id
+    * @return The id
+    */
    public int getId()
    {
       return id;
    }
 
+   /**
+    * Standard setter for id
+    * @param val The id to set
+    */
    public void setId(int val)
    {
       id = val;
    }
 
+   /**
+    * Standard getter for range
+    * @return The range
+    */
    public double getRange()
    {
       return range;
    }
 
+   /**
+    * Standard setter for range
+    * @param val The range to set
+    */
    public void setRange(double val)
    {
       range = val;
    }
 
+   /**
+    * Clears the location of this tower, simply sets location to null
+    */
    public void clearLocation()
    {
       location = null;

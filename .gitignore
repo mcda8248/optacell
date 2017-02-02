@@ -1,0 +1,7 @@
+.settings
+problemSpace.txt
+geojson.json
+/target
+/jar
+/classes
+/.eclipseBuild

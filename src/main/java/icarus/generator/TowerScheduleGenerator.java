@@ -1,7 +1,16 @@
 package icarus.generator;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import icarus.model.CellPhone;
 import icarus.model.CellTower;
@@ -9,220 +18,126 @@ import icarus.model.GeodeticLocation2D;
 import icarus.model.TowerSchedule;
 import icarus.util.CellTowerUtil;
 
+/**
+ * Creates the problem space for optaplanner to generate a solution for
+ */
 public class TowerScheduleGenerator
 {
-   public TowerSchedule createTowerSchedule(int phones,
-         int towers,
-         double phoneRange,
-         GeodeticLocation2D topLeft,
-         GeodeticLocation2D bottomRight,
-         double latGranularity,
-         double lonGranularity)
+   /** logger */
+   private static final Logger logger = LoggerFactory.getLogger(TowerScheduleGenerator.class);
+   /**
+    * Generates a problem space for optaplanner to generate a solution from a properties file
+    * @param props The properties to build from
+    * @return The generated problem space
+    */
+   public static TowerSchedule createFromProperties(Properties props)
    {
       TowerSchedule schedule = new TowerSchedule();
-      schedule.setPhoneList(createPhoneList(phones, phoneRange, topLeft, bottomRight));
-      schedule.setTowerList(createTowerList(towers));
-      schedule.setLocationList(CellTowerUtil.buildGrid(topLeft, bottomRight, latGranularity, lonGranularity));
+      double topLeftLat = Double.valueOf(props.getProperty("grid.topleft.lat"));
+      double topLeftLon = Double.valueOf(props.getProperty("grid.topleft.lon"));
+      double bottomRightLat = Double.valueOf(props.getProperty("grid.bottomright.lat"));
+      double bottomRightLon = Double.valueOf(props.getProperty("grid.bottomright.lon"));
+      double latGranularity = Double.valueOf(props.getProperty("grid.lat.granularity"));
+      double lonGranularity = Double.valueOf(props.getProperty("grid.lon.granularity"));
+      GeodeticLocation2D topLeft = new GeodeticLocation2D(topLeftLat, topLeftLon);
+      GeodeticLocation2D bottomRight = new GeodeticLocation2D(bottomRightLat, bottomRightLon);
+      schedule.setHighPriorityThreshold(Integer.valueOf(props.getProperty("service.highpri.threshold")));
+      schedule.setTopLeft(topLeft);
+      schedule.setBottomRight(bottomRight);
+      schedule.setLocationList(
+            CellTowerUtil.buildGrid(topLeft, bottomRight, latGranularity, lonGranularity));
+
+      int numTowers = Integer.valueOf(props.getProperty("grid.towers"));
+      int numPhones = Integer.valueOf(props.getProperty("grid.phones"));
+      List<String> freqTypes = Stream.of(props.getProperty("frequency.types").split(",")).collect(Collectors.toList());
+      GenerationType phonePriType = GenerationType.valueOf(props.getProperty("phone.priority.creation"));
+      GenerationType phoneFreqType = GenerationType.valueOf(props.getProperty("phone.freqType.creation"));
+      GenerationType phoneRangeType = GenerationType.valueOf(props.getProperty("phone.range.creation"));
+      GenerationType towerRangeType = GenerationType.valueOf(props.getProperty("tower.range.creation"));
+      GenerationType towerFreqType = GenerationType.valueOf(props.getProperty("tower.freqType.creation"));
+      
+      //Build phones
+      List<CellPhone> phoneList = new ArrayList<>();
+      for (int i = 0; i < numPhones; i++)
+      {
+         int phoneRange = Integer.valueOf(props.getProperty("phone.range.meters"));
+         if (phoneRangeType == GenerationType.RANDOM)
+         {
+            int rangeMin = Integer.valueOf(props.getProperty("phone.range.min"));
+            int rangeMax = Integer.valueOf(props.getProperty("phone.range.max"));
+            phoneRange = CellTowerUtil.generateRandomIntBetween(rangeMin, rangeMax);
+         }
+         
+         GeodeticLocation2D location = CellTowerUtil.generateRandomLocationWithin(topLeft, bottomRight);
+         
+         String phoneType = props.getProperty("phone.freqType");
+         if (phoneFreqType == GenerationType.RANDOM)
+         {
+            phoneType = freqTypes.get(CellTowerUtil.generateRandomIntBetween(0, freqTypes.size() - 1));
+         }
+         
+         int priority = i+1;
+         if (phonePriType == GenerationType.RANDOM)
+         {
+            int minPri = Integer.valueOf(props.getProperty("phone.priority.min"));
+            int maxPri = Integer.valueOf(props.getProperty("phone.priority.max"));
+            priority = CellTowerUtil.generateRandomIntBetween(minPri, maxPri);
+         }
+         phoneList.add(new CellPhone(i+1, phoneRange, location, phoneType, priority));
+      }
+      schedule.setPhoneList(phoneList);
+      schedule.setLowestPriority(numPhones);
+      if (phonePriType == GenerationType.RANDOM)
+      {
+         schedule.setLowestPriority(Integer.valueOf(props.getProperty("phone.priority.max")));
+      }
+      
+      //Build towers
+      List<CellTower> towerList = new ArrayList<>();
+      for (int i = 0; i < numTowers; i++)
+      {
+         int towerRange = Integer.valueOf(props.getProperty("tower.range.meters"));
+         if (towerRangeType == GenerationType.RANDOM)
+         {
+            int rangeMin = Integer.valueOf(props.getProperty("tower.range.min"));
+            int rangeMax = Integer.valueOf(props.getProperty("tower.range.max"));
+            towerRange = CellTowerUtil.generateRandomIntBetween(rangeMin, rangeMax);
+         }
+         
+         List<String> towerFreqTypes = Stream.of(props.getProperty("tower.freqTypes").split(",")).collect(Collectors.toList());
+         if (towerFreqType == GenerationType.RANDOM)
+         {
+            towerFreqTypes.clear();
+            while (towerFreqTypes.isEmpty())
+            {
+               towerFreqTypes = freqTypes.stream()
+                     .filter(type -> { return Math.random() < 0.5; })
+                     .collect(Collectors.toList());
+            }
+         }
+         towerList.add(new CellTower(i+1, towerRange, towerFreqTypes));
+      }
+      schedule.setTowerList(towerList);
+      
       return schedule;
    }
 
-   private List<CellPhone> createPhoneList(int numPhones,
-         double phoneRange,
-         GeodeticLocation2D topLeft,
-         GeodeticLocation2D bottomRight)
+   /**
+    * Creates an initial problem space from a file, which needs to be a saved json TowerSchedule object
+    * @param fileToLoad The file to import
+    * @return The initial configuration
+    */
+   public static TowerSchedule createFromImport(String fileToLoad)
    {
-      int n = numPhones;
-      List<CellPhone> phoneList = new ArrayList<>(n);
-      //For now, testing just uses the id as the priority
-      int id = 1;
-      double latScale = Math.abs(bottomRight.getLatitude() - topLeft.getLatitude());
-      double lonScale = Math.abs(bottomRight.getLongitude() - topLeft.getLongitude());
-      for (int i = 0; i < n; i++)
+      try
       {
-         double thisLat = topLeft.getLatitude() + Math.random() * latScale;
-         double thisLon = topLeft.getLongitude() + Math.random() * lonScale;
-         CellPhone phone = new CellPhone(id,
-               phoneRange,
-               new GeodeticLocation2D(thisLat, thisLon),
-               null,
-               id);
-         phoneList.add(phone);
-         id++;
+         return new ObjectMapper().readValue(new File(fileToLoad), TowerSchedule.class);
       }
-      return phoneList;
-   }
-
-   private List<CellTower> createTowerList(int numTowers)
-   {
-      int n = numTowers;
-      List<CellTower> towerList = new ArrayList<>(n);
-      for (int i = 0; i < n; i++)
+         catch (IOException e)
       {
-         CellTower tower = new CellTower(i, 12000);
-         towerList.add(tower);
+         logger.info("Failed to load initial configuration from file - " + e);
       }
-      towerList.get(0).addFreqType("CDMA");
-      towerList.get(1).addFreqType("GSM");
-      return towerList;
-   }
 
-   /*
-   public TowerSchedule createSmallTowerSchedule()
-   {
-      TowerSchedule schedule = new TowerSchedule();
-      schedule.setPhoneList(createSmallPhoneList());
-      schedule.setTowerList(createTowerList(2));
-      schedule.setTowerGrid(createTowerGrid(4000.00, 37.00, -106.00, 36.00,
-            -105.00, schedule.getPhoneList(), schedule.getTowerList()));
-      schedule.setOptimalScore(schedule.getTowerGrid().getOptimalScore());
-      schedule.setPriorityPhones();
-      return schedule;
+      return null;
    }
-
-   public TowerSchedule createMediumTowerSchedule()
-   {
-      TowerSchedule schedule = new TowerSchedule();
-      schedule.setPhoneList(createMediumPhoneList());
-      schedule.setTowerList(createTowerList(5));
-      schedule.setTowerGrid(createTowerGrid(4000.00, 33.00, -103.00, 30.00,
-            -100.00, schedule.getPhoneList(), schedule.getTowerList()));
-      schedule.setOptimalScore(schedule.getTowerGrid().getOptimalScore());
-      schedule.setPriorityPhones();
-      return schedule;
-   }
-
-   public TowerSchedule createLargeTowerSchedule()
-   {
-      TowerSchedule schedule = new TowerSchedule();
-      schedule.setPhoneList(createLargePhoneList());
-      schedule.setTowerList(createTowerList(15));
-      schedule.setTowerGrid(createTowerGrid(4000.00, 40.00, -110.00, 30.00,
-            -100.00, schedule.getPhoneList(), schedule.getTowerList()));
-      schedule.setOptimalScore(schedule.getTowerGrid().getOptimalScore());
-      schedule.setPriorityPhones();
-      return schedule;
-   }
-
-   public TowerSchedule createDemoTowerSchedule()
-   {
-      TowerSchedule schedule = new TowerSchedule();
-      schedule.setPhoneList(createDemoPhoneList());
-      schedule.setTowerList(createTowerList(2));
-      schedule.setTowerGrid(createTowerGrid(4000.00, 37.00, -101.00, 36.00,
-            -100.00, schedule.getPhoneList(), schedule.getTowerList()));
-      schedule.setOptimalScore(schedule.getTowerGrid().getOptimalScore());
-      schedule.setPriorityPhones();
-      return schedule;
-   }
-
-   private List<CellPhone> createSmallPhoneList()
-   {
-      List<CellPhone> phoneList = new ArrayList<>(12);
-      for (int i = 0; i < 10; i++)
-      {
-         CellPhone phone = new CellPhone(4000, (36 + Math.random()),
-               (-106 + Math.random()), 500, false);
-         phone.setId(i);
-         phoneList.add(phone);
-      }
-      CellPhone pri1 = new CellPhone(4000, (36 + Math.random()),
-            (-106 + Math.random()), 500, true);
-      CellPhone pri2 = new CellPhone(4000, (36 + Math.random()),
-            (-106 + Math.random()), 500, true);
-      phoneList.add(pri1);
-      phoneList.add(pri2);
-      return phoneList;
-   }
-
-   private List<CellPhone> createMediumPhoneList()
-   {
-      List<CellPhone> phoneList = new ArrayList<>(80);
-      for (int i = 0; i < 80; i++)
-      {
-         CellPhone phone = new CellPhone(4000,
-               (ThreadLocalRandom.current().nextDouble(30, 33)),
-               (ThreadLocalRandom.current().nextDouble(-103, -100)), 500,
-               false);
-         phone.setId(i);
-         phoneList.add(phone);
-      }
-      CellPhone pri1 = new CellPhone(4000,
-            (ThreadLocalRandom.current().nextDouble(30, 33)),
-            (ThreadLocalRandom.current().nextDouble(-103, -100)), 500, true);
-      CellPhone pri2 = new CellPhone(4000,
-            (ThreadLocalRandom.current().nextDouble(30, 33)),
-            (ThreadLocalRandom.current().nextDouble(-103, -100)), 500, true);
-      phoneList.add(pri1);
-      phoneList.add(pri2);
-      return phoneList;
-   }
-
-   private List<CellPhone> createLargePhoneList()
-   {
-      List<CellPhone> phoneList = new ArrayList<>(250);
-      for (int i = 0; i < 250; i++)
-      {
-         CellPhone phone = new CellPhone(4000,
-               (ThreadLocalRandom.current().nextDouble(30, 40)),
-               (ThreadLocalRandom.current().nextDouble(-110, -100)), 500,
-               false);
-         phone.setId(i);
-         phoneList.add(phone);
-      }
-      CellPhone pri1 = new CellPhone(4000,
-            (ThreadLocalRandom.current().nextDouble(30, 40)),
-            (ThreadLocalRandom.current().nextDouble(-110, -100)), 500, true);
-      CellPhone pri2 = new CellPhone(4000,
-            (ThreadLocalRandom.current().nextDouble(30, 40)),
-            (ThreadLocalRandom.current().nextDouble(-110, -100)), 500, true);
-      phoneList.add(pri1);
-      phoneList.add(pri2);
-      return phoneList;
-   }
-
-   private List<CellPhone> createDemoPhoneList()
-   {
-      List<CellPhone> phoneList = new ArrayList<>(12);
-      CellPhone nor1 = new CellPhone(4000, 36.4, -100.8, 500, false);
-      CellPhone nor2 = new CellPhone(4000, 36.45, -100.85, 500, false);
-      CellPhone nor3 = new CellPhone(4000, 36.5, -100.9, 500, false);
-      CellPhone nor4 = new CellPhone(4000, 36.1, -100.5, 500, false);
-      CellPhone nor5 = new CellPhone(4000, 36.15, -100.55, 500, false);
-      CellPhone nor6 = new CellPhone(4000, 36.2, -100.6, 500, false);
-      CellPhone nor7 = new CellPhone(4000, 36.3, -100.3, 500, false);
-      CellPhone nor8 = new CellPhone(4000, 36.9, -100.2, 500, false);
-      CellPhone nor9 = new CellPhone(4000, 36.8, -100.2, 500, false);
-      CellPhone nor10 = new CellPhone(4000, 36.5, -100.1, 500, false);
-      CellPhone pri1 = new CellPhone(4000, 36.95, -100.95, 500, true);
-      CellPhone pri2 = new CellPhone(4000, 36.775, -100.775, 500, true);
-      pri1.setFreqType("CDMA");
-      pri2.setFreqType("GSM");
-      nor1.setId(1);
-      nor2.setId(2);
-      nor3.setId(3);
-      nor4.setId(4);
-      nor5.setId(5);
-      nor6.setId(6);
-      nor7.setId(7);
-      nor8.setId(8);
-      nor9.setId(9);
-      nor10.setId(10);
-      pri1.setId(11);
-      pri2.setId(12);
-      phoneList.add(nor1);
-      phoneList.add(nor2);
-      phoneList.add(nor3);
-      phoneList.add(nor4);
-      phoneList.add(nor5);
-      phoneList.add(nor6);
-      phoneList.add(nor7);
-      phoneList.add(nor8);
-      phoneList.add(nor9);
-      phoneList.add(nor10);
-      phoneList.add(pri1);
-      phoneList.add(pri2);
-      return phoneList;
-   }
-   
-   */
 }

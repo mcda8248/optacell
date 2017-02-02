@@ -15,7 +15,14 @@ public class GeodeticLocation2D
    private double latitude;
    /** The longitude */
    private double longitude;
-   
+
+   /**
+    * No argument constructor for jackson
+    */
+   public GeodeticLocation2D()
+   {
+   }
+
    /**
     * Constructor of a two dimensional geodetic location
     * @param lat The latitude
@@ -37,11 +44,11 @@ public class GeodeticLocation2D
    }
    /**
     * Standard setter for latitude
-    * @param latitude What to set latitude to
+    * @param lat What to set latitude to
     */
-   public void setLatitude(double latitude)
+   public void setLatitude(double lat)
    {
-      this.latitude = latitude;
+      latitude = lat;
    }
    /**
     * Standard getter for longitude
@@ -53,18 +60,18 @@ public class GeodeticLocation2D
    }
    /**
     * Standard setter for longitude
-    * @param longitude What to set longitude to
+    * @param lon What to set longitude to
     */
-   public void setLongitude(double longitude)
+   public void setLongitude(double lon)
    {
-      this.longitude = longitude;
+      longitude = lon;
    }
 
    /**
-    * Returns the distance between two geodetic points in kilometers
+    * Returns the distance between two geodetic points in meters
     * @param one location one
     * @param two location two
-    * @return The distance between the two points, in kilometers.  Returns MAX_DOUBLE if either input is null
+    * @return The distance between the two points, in meters.  Returns MAX_DOUBLE if either input is null
     */
    public static double distanceBetween(GeodeticLocation2D one,
          GeodeticLocation2D two)
@@ -74,7 +81,7 @@ public class GeodeticLocation2D
          return Double.MAX_VALUE;
       }
 
-      final double R = 6372800; // Earth Radius in Kilometers
+      final double R = 6372800; // Earth Radius in Meters
       double dLat = Math.toRadians(one.getLatitude() - two.getLatitude());
       double dLon = Math.toRadians(one.getLongitude() - two.getLongitude());
       double latRad = Math.toRadians(one.getLatitude());
@@ -88,18 +95,18 @@ public class GeodeticLocation2D
    }
 
    /**
-    * Returns a collection of points that are every 45 degrees on a circle around a
+    * Returns a collection of points that are every 5 degrees on a circle around a
     * given point at a specified distance.  The first and last points are the same,
-    * closing the circle, so the returned array is of size 9
+    * closing the circle, so the returned array is of size 73
     * @param location The location around which the circle should be calculated
     * @param distance The distance from the center each point should be
-    * @return A collection of 9 points, one every 45 degrees in a circle
+    * @return A collection of 73 points, one every 5 degrees in a circle
     */
    public static List<double[]> getPointsInCircleAround(GeodeticLocation2D location,
          double distance)
    {
       List<double[]> points = new ArrayList<>();
-      for (int i = 0; i <= 360; i+=45)
+      for (int i = 0; i <= 360; i+=5)
       {
          GeodeticLocation2D loc = getLocationAtDistanceFrom(location, distance, i);
          double[] array = new double[2];
@@ -115,7 +122,7 @@ public class GeodeticLocation2D
     * Returns the point on the earth that is a specified distance from another point
     * in a specified direction
     * @param location The location to start from
-    * @param distance The distance to travel, in kilometers
+    * @param distance The distance to travel, in meters
     * @param angle The angle to travel in from the start
     * @return The end point
     */
@@ -136,7 +143,12 @@ public class GeodeticLocation2D
 
       return new GeodeticLocation2D(Math.toDegrees(lat2), Math.toDegrees(lng2));
    }
-   
+
+   /**
+    * Two geodetic locations are considered equal if their latitudes and longitudes are equal
+    * @param other The other object to compare with
+    * @return True if the provided object is a GeodeticLocation2D with equal latitude and longitude of this instance
+    */
    @Override
    public boolean equals(Object other)
    {
@@ -146,5 +158,35 @@ public class GeodeticLocation2D
       GeodeticLocation2D o = (GeodeticLocation2D)other;
       return (latitude == o.getLatitude() &&
             longitude == o.getLongitude());
+   }
+
+   /**
+    * Generates the hashcode for a geodetic location, just calls
+    * <code>super.hashCode()</code>
+    * @see java.lang.Object#hashCode()
+    * @return The hashcode of this object
+    */
+   @Override
+   public int hashCode()
+   {
+      return super.hashCode();
+   }
+   
+   /**
+    * Overridden toString method, returns ' (lat, lon) '
+    * @see java.lang.Object#toString()
+    * @return A string representation of this location
+    */
+   @Override
+   public String toString()
+   {
+      StringBuilder sb = new StringBuilder();
+      sb.append(" (")
+        .append(latitude)
+        .append(", ")
+        .append(longitude)
+        .append(") ");
+
+      return sb.toString();
    }
 }
