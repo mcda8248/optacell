@@ -1,7 +1,8 @@
 .settings
-problemSpace.txt
 geojson.json
+problemSpace.txt
 /target
 /jar
 /classes
 /.eclipseBuild
+/benchmarking

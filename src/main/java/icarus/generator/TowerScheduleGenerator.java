@@ -75,8 +75,13 @@ public class TowerScheduleGenerator
          {
             phoneType = freqTypes.get(CellTowerUtil.generateRandomIntBetween(0, freqTypes.size() - 1));
          }
-         
+
+         String fixedPri = props.getProperty("phone.priority");
          int priority = i+1;
+         if (!"id".equals(fixedPri))
+         {
+            priority = Integer.valueOf(fixedPri);
+         }
          if (phonePriType == GenerationType.RANDOM)
          {
             int minPri = Integer.valueOf(props.getProperty("phone.priority.min"));
@@ -115,7 +120,9 @@ public class TowerScheduleGenerator
                      .collect(Collectors.toList());
             }
          }
-         towerList.add(new CellTower(i+1, towerRange, towerFreqTypes));
+         CellTower tower = new CellTower(i+1, towerRange, towerFreqTypes);
+         tower.setLocation(topLeft);
+         towerList.add(tower);
       }
       schedule.setTowerList(towerList);
       
