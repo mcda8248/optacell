@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import icarus.generator.TowerScheduleGenerator;
 import icarus.model.TowerSchedule;
-import icarus.scoring.LocationStrengthWeightFactory;
 
 /**
  * The Cell Tower application uses OptaPlanner to schedule cell phone towers onto a

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
 
-  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
   <benchmarkDirectory>benchmarking</benchmarkDirectory>
   <warmUpSecondsSpentLimit>30</warmUpSecondsSpentLimit>
   <benchmarkReport>
@@ -23,9 +22,10 @@
          <initializingScoreTrend>ONLY_UP</initializingScoreTrend>
        </scoreDirectorFactory>
      </solver>
+     <subSingleCount>1</subSingleCount>
   </inheritedSolverBenchmark>
 
-
+<!-- 
 <#list [11] as entityTabuSize>
 <#list [1000] as acceptedCountLimit>
   <solverBenchmark>
@@ -36,21 +36,12 @@
 
     <acceptor>
       <entityTabuSize>${entityTabuSize}</entityTabuSize>
-      <!-- 
-        Things to try and benchmark:
-        <entityTabuRatio>entityTabuRatio</entityTabuRatio>
-        <valueTabuRatio>valueTabuRatio</valueTabuRatio>
-        -->
     </acceptor>
     <forager>
       <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
-        <!--
-        To try
-        <finalistPodiumType>STRATEGIC_OSCILLATION</finalistPodiumType>
-        -->
     </forager>
      <termination>
-      <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
+      <unimprovedStepCountLimit>100</unimprovedStepCountLimit>
     </termination>
   </localSearch>
   </solver>
@@ -69,19 +60,12 @@
 
     <acceptor>
       <simulatedAnnealingStartingTemperature>${hardTemperature}hard/${softTemperature}soft</simulatedAnnealingStartingTemperature>
-          <!--
-              Things to try and benchmark:
-        <valueTabuSize>valueTabuSize</valueTabuSize>
-        <entityTabuSize>entityTabuSize</entityTabuSize>
-        <entityTabuRatio>entityTabuRatio</entityTabuRatio>
-        <valueTabuRatio>valueTabuRatio</valueTabuRatio>
-        -->
     </acceptor>
     <forager>
       <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
     </forager>
      <termination>
-      <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
+      <unimprovedStepCountLimit>100</unimprovedStepCountLimit>
     </termination>
   </localSearch>
   </solver>
@@ -89,6 +73,7 @@
 </#list>
 </#list>
 </#list>
+-->
 
 <#list [200] as lateAcceptanceSize>
 <#list [12] as acceptedCountLimit>
@@ -99,17 +84,12 @@
     <changeMoveSelector/>
     <acceptor>
       <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
-        <!--
-         To try
-         <valueTabuSize></valueTabuSize>
-         <entityTabuSize></entityTabuSize>
-         -->
     </acceptor>
     <forager>
       <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
     </forager>
      <termination>
-      <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
+      <unimprovedStepCountLimit>200</unimprovedStepCountLimit>
     </termination>
   </localSearch>
   </solver>
@@ -117,6 +97,7 @@
 </#list>
 </#list>
 
+<!--
 <#list [200] as stepCountingSize>
 <#list [12] as acceptedCountLimit>
   <solverBenchmark>
@@ -131,13 +112,14 @@
       <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
     </forager>
      <termination>
-      <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
+      <unimprovedStepCountLimit>300</unimprovedStepCountLimit>
     </termination>
   </localSearch>
   </solver>
   </solverBenchmark>
 </#list>
 </#list>
+-->
   <!-- 
     Construction Heuristics tests, caching values had best performance
   <solverBenchmark>

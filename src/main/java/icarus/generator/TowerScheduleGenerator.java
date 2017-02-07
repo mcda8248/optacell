@@ -8,9 +8,10 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import icarus.model.CellPhone;
 import icarus.model.CellTower;
@@ -125,7 +126,11 @@ public class TowerScheduleGenerator
          towerList.add(tower);
       }
       schedule.setTowerList(towerList);
-      
+      schedule.buildPhoneServiceList();
+
+      logger.info("Generated schedule with " + schedule.getPhoneList().size() + " phones, " +
+                  schedule.getTowerList().size() + " towers, and " +
+                  schedule.getLocationList().size() + " grid points");
       return schedule;
    }
 
@@ -138,7 +143,14 @@ public class TowerScheduleGenerator
    {
       try
       {
-         return new ObjectMapper().readValue(new File(fileToLoad), TowerSchedule.class);
+         TowerSchedule schedule = new ObjectMapper().readValue(new File(fileToLoad), TowerSchedule.class);
+
+         logger.info("Generated schedule with " + schedule.getPhoneList().size() + " phones, " +
+                     schedule.getTowerList().size() + " towers, and " +
+                     schedule.getLocationList().size() + " grid points");
+
+         schedule.buildPhoneServiceList();
+         return schedule;
       }
          catch (IOException e)
       {

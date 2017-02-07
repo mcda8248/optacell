@@ -2,7 +2,6 @@ package icarus.scoring;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +48,6 @@ public class CellTowerIncrementalScoreCalculator
       lowestPriority = workingSolution.getLowestPriority();
       highPriThreshold = workingSolution.getHighPriorityThreshold();
       
-      //There should be no towers placed, so this will return the worst possible score
       score = generateScore(workingSolution);
       
       curTowerLocations = new ArrayList<>();
@@ -58,20 +56,7 @@ public class CellTowerIncrementalScoreCalculator
          curTowerLocations.add(tower.getLocation());
       }
 
-      phonesServicedByLocation = new HashMap<>();
-      workingSolution.getLocationList().stream().forEach(loc -> {
-         workingSolution.getPhoneList().stream().forEach(phone -> {
-            if (!phonesServicedByLocation.containsKey(loc))
-            {
-               phonesServicedByLocation.put(loc, new ArrayList<>());
-            }
-
-            if (GeodeticLocation2D.distanceBetween(loc, phone.getLocation()) < phone.getRange())
-            {
-               phonesServicedByLocation.get(loc).add(phone);
-            }
-         });
-      });
+      phonesServicedByLocation = workingSolution.getPhonesServicedByLocation();
    }
 
    /**

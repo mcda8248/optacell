@@ -41,7 +41,7 @@
       <acceptedCountLimit>1000</acceptedCountLimit>
     </forager>
      <termination>
-      <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
+      <unimprovedStepCountLimit>200</unimprovedStepCountLimit>
     </termination>
   </localSearch>
   
@@ -54,7 +54,7 @@
       <acceptedCountLimit>6</acceptedCountLimit>
     </forager>
      <termination>
-      <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
+      <unimprovedStepCountLimit>200</unimprovedStepCountLimit>
     </termination>
   </localSearch>
   -->
@@ -67,7 +67,7 @@
       <acceptedCountLimit>20</acceptedCountLimit>
     </forager>
      <termination>
-      <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
+      <unimprovedStepCountLimit>200</unimprovedStepCountLimit>
     </termination>
   </localSearch>
   <!--
@@ -80,7 +80,7 @@
       <acceptedCountLimit>6</acceptedCountLimit>
     </forager>
      <termination>
-      <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
+      <unimprovedStepCountLimit>200</unimprovedStepCountLimit>
     </termination>
   </localSearch>
   -->

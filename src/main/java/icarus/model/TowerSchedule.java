@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +18,9 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Represents the schedule of cell phone towers servicing cell phones on a grid
@@ -39,6 +43,13 @@ public class TowerSchedule implements Solution<HardSoftLongScore>
    /** The bottom right corner of the geospatial area to be considered */
    private GeodeticLocation2D bottomRight;
    /**
+    * All phones whose ranges overlap a location, JsonIgnore added as we 
+    * don't want this map in the save file
+    * */
+   @JsonIgnore
+   private Map<GeodeticLocation2D, Collection<CellPhone>> phonesServicedByLocation;
+
+   /**
     * The list of cell towers.  This is an optaplanner PlanningEntityCollectionProperty,
     * as optaplanner changes them while generating it's schedule
     */
@@ -47,6 +58,7 @@ public class TowerSchedule implements Solution<HardSoftLongScore>
    /** The list of all cell phones to be considered */
    private List<CellPhone> phoneList;
    /** The optaplanner score of this schedule */
+   @JsonIgnore
    private HardSoftLongScore score;
 
    /**
@@ -172,6 +184,49 @@ public class TowerSchedule implements Solution<HardSoftLongScore>
    }
 
    /**
+    * Incremental scoring of this schedule relies on being able to find the phones
+    * that are or would be serviced by towers on specific points.  During generation
+    * of the initial schedule, this map is created so the incremental scorer doesn't
+    * have to rebuild it if the schedule is used repeatedly
+    */
+   public void buildPhoneServiceList()
+   {
+      phonesServicedByLocation = new HashMap<>();
+      getLocationList().stream().forEach(loc -> {
+         getPhoneList().stream().forEach(phone -> {
+            if (!phonesServicedByLocation.containsKey(loc))
+            {
+               phonesServicedByLocation.put(loc, new ArrayList<>());
+            }
+
+            if (GeodeticLocation2D.distanceBetween(loc, phone.getLocation()) < phone.getRange())
+            {
+               phonesServicedByLocation.get(loc).add(phone);
+            }
+         });
+      });
+   }
+
+   /**
+    * Standard setter for the phones serviced by location map
+    * @param val the map to set
+    */
+   public void setPhonesServicedByLocation(Map<GeodeticLocation2D, Collection<CellPhone>> val)
+   {
+      phonesServicedByLocation = val;
+   }
+   
+   /**
+    * Returns the map of locations to all the phones that would be serviced by
+    * placing a tower at that location
+    * @return The phone service map by location
+    */
+   public Map<GeodeticLocation2D, Collection<CellPhone>> getPhonesServicedByLocation()
+   {
+      return phonesServicedByLocation;
+   }
+
+   /**
     * Returns the list of the possible locations within the geospatial area of 
     * effect of this schedule.
     * <p>
@@ -276,6 +331,7 @@ public class TowerSchedule implements Solution<HardSoftLongScore>
     * @return A collection of all problem facts
     */
    @Override
+   @JsonIgnore
    public Collection<? extends Object> getProblemFacts()
    {
       List<Object> facts = new ArrayList<>();
