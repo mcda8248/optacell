@@ -2,7 +2,6 @@ package icarus.scoring;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +48,6 @@ public class CellTowerIncrementalScoreCalculator
       lowestPriority = workingSolution.getLowestPriority();
       highPriThreshold = workingSolution.getHighPriorityThreshold();
       
-      //There should be no towers placed, so this will return the worst possible score
       score = generateScore(workingSolution);
       
       curTowerLocations = new ArrayList<>();
@@ -58,20 +56,7 @@ public class CellTowerIncrementalScoreCalculator
          curTowerLocations.add(tower.getLocation());
       }
 
-      phonesServicedByLocation = new HashMap<>();
-      workingSolution.getLocationList().stream().forEach(loc -> {
-         workingSolution.getPhoneList().stream().forEach(phone -> {
-            if (!phonesServicedByLocation.containsKey(loc))
-            {
-               phonesServicedByLocation.put(loc, new ArrayList<>());
-            }
-
-            if (GeodeticLocation2D.distanceBetween(loc, phone.getLocation()) < phone.getRange())
-            {
-               phonesServicedByLocation.get(loc).add(phone);
-            }
-         });
-      });
+      phonesServicedByLocation = workingSolution.getPhonesServicedByLocation();
    }
 
    /**
@@ -151,7 +136,7 @@ public class CellTowerIncrementalScoreCalculator
       {
          logger.info("Failed to remove tower location from list");
       }
-      if (curLocation != null)
+      if (curLocation != null && phonesServicedByLocation.containsKey(curLocation))
       {
          for (CellPhone phone : phonesServicedByLocation.get(curLocation))
          {
@@ -178,20 +163,17 @@ public class CellTowerIncrementalScoreCalculator
    private void place(CellTower tower)
    {
       GeodeticLocation2D newLocation = tower.getLocation();
-      //logger.info("Placing tower at - " + newLocation);
       
-      if (newLocation != null)
+      if (newLocation != null && phonesServicedByLocation.containsKey(newLocation))
       {
          for (CellPhone phone : phonesServicedByLocation.get(newLocation))
          {
-            //logger.info("Phone serviced by this location is at - " + phone.getLocation());
             boolean alreadyServiced = curTowerLocations.stream().filter(loc -> {
                return GeodeticLocation2D.distanceBetween(loc, phone.getLocation()) < phone.getRange();
             }).findAny().isPresent();
 
             if (!alreadyServiced)
             {
-               //logger.info("Phone was not already serviced, adding score for priority - " + phone.getPriority());
                score = score.subtract(getPhoneScore(phone));
             }
          }
@@ -213,6 +195,10 @@ public class CellTowerIncrementalScoreCalculator
 
    /**
     * Returns the score for a cell phone
+    * 
+    * TODO - consolidate this scoring routine, repeated right now here, in easyscore, and locationweightfactory
+    *      - if more than one priority of phone subtracts from hard score, they should probably
+    *        subtract more for a pri 1 than a pri 2 also
     * @param phone The phone to score
     * @return The score of the phone
     */
@@ -225,7 +211,7 @@ public class CellTowerIncrementalScoreCalculator
          hardScore--;
       else
       {
-         int relativePri = lowestPriority - phone.getPriority();
+         int relativePri = lowestPriority - phone.getPriority() + 1;
          int cubed = relativePri*relativePri*relativePri;
          softScore -= cubed;
       }
@@ -236,16 +222,14 @@ public class CellTowerIncrementalScoreCalculator
    /**
     * Generates the current score of a TowerSchedule.
     * <p>
-    * Subtracts the square of the inverse of the priority of all un-serviced
-    * cell phones in the schedule from the soft score.  The hard score is not
-    * used at this time
-    * <p>
-    * Therefore, missing priority 1 cell phones will subtract 1 from the score,
-    * and missing priority 2 cell phones will subtract 0.25 from the score, etc...
+    * Subtracts a score for each phone in the schedule if it's not being 
+    * serviced by a tower
     * <p>
     * TODO - Make the scoring generic or user defined
     *        Discuss and potentially change scoring methodology?
-    *        HardSoftDoubleScore is not recommended, switch to hardsoftlongscore
+    *        Current scoring takes (lowestPossiblePri - phonePri) ^ 3
+    *        and subtracts that from the soft score.  Pri 1 phone subtract 1
+    *        from the hard score
     *        
     * @param schedule The tower schedule to score
     * @return The score of the schedule
@@ -261,7 +245,6 @@ public class CellTowerIncrementalScoreCalculator
          {
             if (CellTowerUtil.isServicing(tower, phone))
             {
-               logger.info("Tower is servicing phone");
                foundTower = true;
                break;
             }

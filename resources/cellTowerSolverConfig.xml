@@ -17,23 +17,20 @@
       -->
       <initializingScoreTrend>ONLY_UP</initializingScoreTrend>
   </scoreDirectorFactory>
-
+<!-- 
   <constructionHeuristic>
     <pooledEntityPlacer>
-    <changeMoveSelector>
-    <entitySelector>
-      <cacheType>PHASE</cacheType>
-    </entitySelector>
-    <valueSelector>
-       <cacheType>PHASE</cacheType>
-       <selectionOrder>SORTED</selectionOrder>
-       <sorterManner>INCREASING_STRENGTH</sorterManner>
-    </valueSelector>
-    </changeMoveSelector>
+      <changeMoveSelector>
+        <valueSelector>
+         <cacheType>PHASE</cacheType>
+        </valueSelector>
+      </changeMoveSelector>
     </pooledEntityPlacer>
   </constructionHeuristic>
 
-  <!--
+  
+  -->
+  <!-- 
   <localSearch>
     <changeMoveSelector/>
 
@@ -44,8 +41,47 @@
       <acceptedCountLimit>1000</acceptedCountLimit>
     </forager>
      <termination>
-      <unimprovedSecondsSpentLimit>10</unimprovedSecondsSpentLimit>
+      <unimprovedStepCountLimit>200</unimprovedStepCountLimit>
     </termination>
   </localSearch>
--->
+  
+  <localSearch>
+    <changeMoveSelector/>
+    <acceptor>
+      <simulatedAnnealingStartingTemperature>1hard/100soft</simulatedAnnealingStartingTemperature>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>6</acceptedCountLimit>
+    </forager>
+     <termination>
+      <unimprovedStepCountLimit>200</unimprovedStepCountLimit>
+    </termination>
+  </localSearch>
+  -->
+  <localSearch>
+    <changeMoveSelector/>
+    <acceptor>
+      <lateAcceptanceSize>200</lateAcceptanceSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>20</acceptedCountLimit>
+    </forager>
+     <termination>
+      <unimprovedStepCountLimit>200</unimprovedStepCountLimit>
+    </termination>
+  </localSearch>
+  <!--
+  <localSearch>
+    <changeMoveSelector/>
+    <acceptor>
+      <stepCountingHillClimbingSize>200</stepCountingHillClimbingSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>6</acceptedCountLimit>
+    </forager>
+     <termination>
+      <unimprovedStepCountLimit>200</unimprovedStepCountLimit>
+    </termination>
+  </localSearch>
+  -->
 </solver>
